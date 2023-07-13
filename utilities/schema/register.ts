@@ -10,7 +10,7 @@ const schemaFormRegister = yup.object({
         .string()
         .min(6, 'Cần nhập tối thiểu 6 ký tự')
         .required('Bạn cần nhập password'),
-    passwordConfirm: yup
+    confirmPassword: yup
         .string()
         .min(6, 'Cần nhập tối thiểu 6 ký tự')
         .required('Bạn cần nhập password')
