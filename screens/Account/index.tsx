@@ -10,7 +10,7 @@ const AccountScreen = ({ navigation }: any) => {
             <Button
                 icon='login'
                 mode='contained'
-                className='bg-primary-color w-full'
+                className='bg-primary-color w-11/12'
                 onPress={() => {
                     navigation.navigate('Login')
                 }}
@@ -20,7 +20,7 @@ const AccountScreen = ({ navigation }: any) => {
             <Button
                 icon='lock'
                 mode='contained'
-                className='bg-primary-color mt-2 w-full'
+                className='bg-primary-color mt-2 w-11/12'
                 onPress={() => {
                     navigation.navigate('Register')
                 }}

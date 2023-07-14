@@ -1,45 +1,7 @@
-import { View, Text, FlatList } from 'react-native'
-import Header from '../../components/Home/Header'
-import CartItem from '../../components/Card/CardItem'
+import ResultRender from '../../components/Home/ResultRender'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
 
-const data = [
-    {
-        id: 1,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        id: 2,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        id: 3,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        id: 4,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        id: 5,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        id: 6,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-]
+const HomeTabs = createMaterialTopTabNavigator()
 
 const tabBarList = [
     {
@@ -86,17 +48,23 @@ const tabBarList = [
 
 const HomeScreen = () => {
     return (
-        <View className='m-2 w-full'>
-            <Header tabbarList={tabBarList} />
-            <FlatList
-                className='flex w-full pt-1'
-                data={data}
-                renderItem={({ item, index }) => <CartItem data={item} />}
-                keyExtractor={(item) => item.id.toString()}
-                numColumns={2}
-                scrollEnabled={true}
-            />
-        </View>
+        <HomeTabs.Navigator
+            screenOptions={{
+                tabBarScrollEnabled: true,
+                tabBarLabelStyle: {
+                    fontSize: 12,
+                    width: 90,
+                },
+            }}
+        >
+            {tabBarList.map((item) => (
+                <HomeTabs.Screen
+                    key={item.id}
+                    name={item.title}
+                    component={ResultRender}
+                />
+            ))}
+        </HomeTabs.Navigator>
     )
 }
 

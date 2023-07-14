@@ -1,4 +1,5 @@
 /* eslint-disable indent */
+/* eslint-disable quote-props */
 module.exports = {
   content: [
     './App.{js,jsx,ts,tsx}',
@@ -11,12 +12,12 @@ module.exports = {
         '2': '1 1 20%',
       },
       fontSize: {
-        'primary-font': '18px'
+        'primary-font': '18px',
       },
       colors: {
         'primary-color': '#3b82f6',
-        'error': '#ef4444'
-      }
+        'error': '#ef4444',
+      },
     },
   },
   plugins: [],
