@@ -10,14 +10,10 @@ interface Values {
     password: string
 }
 
-const LoginScreeen = () => {
+const LoginScreen = ({ navigation }: any) => {
     return (
         <View className='h-full flex justify-start items-start m-4'>
             <View className='w-full'>
-                <Appbar.Header>
-                    <Appbar.BackAction onPress={() => {}} />
-                    <Text className='text-primary-font font-bold'>Login</Text>
-                </Appbar.Header>
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validationSchema={schemaFormLogin}
@@ -55,7 +51,7 @@ const LoginScreeen = () => {
                                     <></>
                                 )}
                             </View>
-                            <View className='mb-2'>
+                            <View>
                                 <TextInput
                                     label='Password'
                                     mode='outlined'
@@ -77,6 +73,11 @@ const LoginScreeen = () => {
                                     <></>
                                 )}
                             </View>
+                            <Button mode='text' className='text-[16px]'>
+                                <Text className='text-sky-500'>
+                                    Quên mật khẩu?
+                                </Text>
+                            </Button>
                             <Button
                                 mode='contained'
                                 className='rounded-3xl py-1 text-white bg-primary-color'
@@ -99,7 +100,9 @@ const LoginScreeen = () => {
                     <Button
                         mode='text'
                         className='text-[16px]'
-                        onPress={() => Alert.alert('hello')}
+                        onPress={() => {
+                            navigation.navigate('Register')
+                        }}
                     >
                         <Text className='text-sky-500'>Đăng ký ngay</Text>
                     </Button>
@@ -109,4 +112,4 @@ const LoginScreeen = () => {
     )
 }
 
-export default LoginScreeen
+export default LoginScreen

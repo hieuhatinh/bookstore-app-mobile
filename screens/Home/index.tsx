@@ -1,6 +1,6 @@
 import { View, Text, FlatList } from 'react-native'
-import { Card } from 'react-native-paper'
 import Header from '../../components/Home/Header'
+import CartItem from '../../components/Card/CardItem'
 
 const data = [
     {
@@ -86,39 +86,16 @@ const tabBarList = [
 
 const HomeScreen = () => {
     return (
-        <View className='m-2 mt-0 w-full'>
-            <View className='bg-primary-color mb-2'>
-                <Text className='text-red-500 text-2xl p-2 font-bold'>
-                    Bookstore App
-                </Text>
-            </View>
-
-            {/* Header */}
+        <View className='m-2 w-full'>
             <Header tabbarList={tabBarList} />
             <FlatList
                 className='flex w-full pt-1'
                 data={data}
-                renderItem={({ item, index }) => (
-                    <Card className='m-2 flex-1'>
-                        <Card.Cover
-                            source={{
-                                uri: item.image,
-                            }}
-                            width={50}
-                            height={50}
-                        />
-                        {/* <Card.Title title='' subtitle='Card Subtitle' /> */}
-                        <Card.Content>
-                            <Text>{item.name}</Text>
-                            <Text>{item.author}</Text>
-                        </Card.Content>
-                    </Card>
-                )}
+                renderItem={({ item, index }) => <CartItem data={item} />}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 scrollEnabled={true}
             />
-            {/* <Footer /> */}
         </View>
     )
 }

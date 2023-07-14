@@ -9,9 +9,13 @@ import AccountScreen from '../../screens/Account'
 
 const Tab = createMaterialBottomTabNavigator()
 
-const Footer = () => {
+const BottomTabs = () => {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            initialRouteName='Home'
+            activeColor='#3b82f6'
+            inactiveColor='#3e2465'
+        >
             <Tab.Screen
                 name='Home'
                 component={HomeScreen}
@@ -20,6 +24,7 @@ const Footer = () => {
                     tabBarIcon: ({ color }) => {
                         return <Icon name='home' size={25} color={color} />
                     },
+                    title: 'BookStore App',
                 }}
             />
             <Tab.Screen
@@ -30,6 +35,7 @@ const Footer = () => {
                     tabBarIcon: ({ color }) => {
                         return <Icon name='magnify' size={25} color={color} />
                     },
+                    title: 'Search',
                 }}
             />
             <Tab.Screen
@@ -58,4 +64,4 @@ const Footer = () => {
     )
 }
 
-export default Footer
+export default BottomTabs

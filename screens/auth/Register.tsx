@@ -11,16 +11,10 @@ interface Values {
     confirmPassword: string
 }
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }: any) => {
     return (
         <View className='h-full flex justify-start items-start m-4'>
             <View className='w-full'>
-                <Appbar.Header>
-                    <Appbar.BackAction onPress={() => {}} />
-                    <Text className='text-primary-font font-bold'>
-                        Register
-                    </Text>
-                </Appbar.Header>
                 <Formik
                     initialValues={{
                         email: '',
@@ -136,7 +130,9 @@ const RegisterScreen = () => {
                     <Button
                         mode='text'
                         className='text-[16px]'
-                        onPress={() => Alert.alert('hello')}
+                        onPress={() => {
+                            navigation.navigate('Login')
+                        }}
                     >
                         <Text className='text-sky-500'>Đăng nhập ngay</Text>
                     </Button>

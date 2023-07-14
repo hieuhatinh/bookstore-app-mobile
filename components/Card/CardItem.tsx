@@ -14,7 +14,7 @@ interface IData {
 
 const CartItem = ({ data }: IData) => {
     return (
-        <Card className='w-full'>
+        <Card className='m-2 flex-1'>
             <Card.Cover
                 source={{
                     uri: data.image,
@@ -22,9 +22,8 @@ const CartItem = ({ data }: IData) => {
                 width={50}
                 height={50}
             />
-            {/* <Card.Title title='' subtitle='Card Subtitle' /> */}
             <Card.Content>
-                <Text>{data.name}</Text>
+                <Text className='text-base font-semibold'>{data.name}</Text>
                 <Text>{data.author}</Text>
             </Card.Content>
         </Card>

@@ -17,7 +17,11 @@ const Header = (props: IProps) => {
         <View className='pb-2'>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {tabbarList.map((item: IPropTabbarItem) => (
-                    <Chip mode='outlined' style={{ marginHorizontal: 4 }}>
+                    <Chip
+                        key={item.id}
+                        mode='outlined'
+                        style={{ marginHorizontal: 4 }}
+                    >
                         {item.title}
                     </Chip>
                 ))}

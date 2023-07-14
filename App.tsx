@@ -9,24 +9,40 @@ import React from 'react'
 import { PaperProvider } from 'react-native-paper'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 // import {Platform} from 'react-native';
-import { View, Text } from 'react-native'
-import LoginScreeen from './screens/auth/Login'
+import LoginScreen from './screens/auth/Login'
 import RegisterScreen from './screens/auth/Register'
-import HomeScreen from './screens/Home'
-import Footer from './components/Home/Footer'
+import BottomTabs from './components/Main/BottomTabs'
+import Header from './components/Main/Header'
+
+const Stack = createNativeStackNavigator()
 
 function App(): JSX.Element {
     return (
         <SafeAreaProvider>
-            <NavigationContainer>
-                <PaperProvider>
-                    {/* <LoginScreeen /> */}
-                    {/* <RegisterScreen /> */}
-                    <Footer />
-                </PaperProvider>
-            </NavigationContainer>
+            <PaperProvider>
+                <NavigationContainer>
+                    <Stack.Navigator>
+                        <Stack.Screen
+                            name='BottomTabs'
+                            component={BottomTabs}
+                            options={{
+                                headerTitle: (props) => <Header />,
+                                headerStyle: {
+                                    backgroundColor: '#3b82f6',
+                                },
+                            }}
+                        />
+                        <Stack.Screen name='Login' component={LoginScreen} />
+                        <Stack.Screen
+                            name='Register'
+                            component={RegisterScreen}
+                        />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </PaperProvider>
         </SafeAreaProvider>
     )
 }
