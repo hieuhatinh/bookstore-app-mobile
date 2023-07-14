@@ -19,7 +19,14 @@
             {
               "endOfLine": "auto"
             }
-          ]
+        ], 
+        "import/no-unresolved": 0,
+        "import/extensions": [
+            "error",
+            {
+              "json": "always"
+            }
+        ]
     }, 
     "plugins": [
         "react",

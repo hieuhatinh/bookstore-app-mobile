@@ -4,7 +4,6 @@
  *
  * @format
  */
-import 'react-native-gesture-handler'
 import React from 'react'
 import { PaperProvider } from 'react-native-paper'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -16,6 +15,8 @@ import LoginScreen from './screens/auth/Login'
 import RegisterScreen from './screens/auth/Register'
 import BottomTabs from './components/Main/BottomTabs'
 import Header from './components/Main/Header'
+import DetailBook from './screens/DetailBook'
+import ProductList from './components/Home/ProductList'
 
 const Stack = createNativeStackNavigator()
 
@@ -39,6 +40,10 @@ function App(): JSX.Element {
                         <Stack.Screen
                             name='Register'
                             component={RegisterScreen}
+                        />
+                        <Stack.Screen
+                            name='DetailBook'
+                            component={DetailBook}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
