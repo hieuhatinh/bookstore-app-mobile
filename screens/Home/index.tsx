@@ -106,13 +106,15 @@ const HomeScreen = ({ navigation }: any) => {
                     fontSize: 12,
                     width: 90,
                 },
+                tabBarGap: 2,
+                tabBarItemStyle: {
+                    width: 120,
+                },
             }}
         >
             {tabBarList.map((item) => (
-                <HomeTabs.Screen
-                    key={item.id}
-                    name={item.title}
-                    component={() => (
+                <HomeTabs.Screen key={item.id} name={item.title}>
+                    {() => (
                         <GestureHandlerRootView>
                             <ProductList
                                 category={item.param}
@@ -121,7 +123,7 @@ const HomeScreen = ({ navigation }: any) => {
                             />
                         </GestureHandlerRootView>
                     )}
-                />
+                </HomeTabs.Screen>
             ))}
         </HomeTabs.Navigator>
     )
