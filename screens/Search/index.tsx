@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { View } from 'react-native'
 import { Searchbar } from 'react-native-paper'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { SafeAreaView } from 'react-native'
 
 import ProductList from '../../components/Home/ProductList'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const data = [
     {
@@ -51,17 +52,18 @@ const data = [
 ]
 
 const SearchScreen = ({ navigation }: any) => {
+    const insets = useSafeAreaInsets()
     const [searchQuery, setSearchQuery] = useState('')
 
     const onChangeSearch = (query: string) => setSearchQuery(query)
 
     return (
-        <View>
+        <SafeAreaView style={{ paddingBottom: insets.bottom + 150 }}>
             <Searchbar
                 placeholder='Tìm kiếm theo tên sách, tên tác giả'
                 onChangeText={onChangeSearch}
                 value={searchQuery}
-                className='m-2'
+                className='m-2 bg-white'
             />
             <GestureHandlerRootView>
                 <ProductList
@@ -70,7 +72,7 @@ const SearchScreen = ({ navigation }: any) => {
                     navigation={navigation}
                 />
             </GestureHandlerRootView>
-        </View>
+        </SafeAreaView>
     )
 }
 

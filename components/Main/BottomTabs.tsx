@@ -15,6 +15,9 @@ const BottomTabs = () => {
             initialRouteName='Home'
             activeColor='#3b82f6'
             inactiveColor='#3e2465'
+            barStyle={{
+                backgroundColor: '#fff',
+            }}
         >
             <Tab.Screen
                 name='Home'

@@ -16,7 +16,6 @@ import RegisterScreen from './screens/auth/Register'
 import BottomTabs from './components/Main/BottomTabs'
 import Header from './components/Main/Header'
 import DetailBook from './screens/DetailBook'
-import ProductList from './components/Home/ProductList'
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +33,7 @@ function App(): JSX.Element {
                                 headerStyle: {
                                     backgroundColor: '#3b82f6',
                                 },
+                                headerShown: false,
                             }}
                         />
                         <Stack.Screen name='Login' component={LoginScreen} />
