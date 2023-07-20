@@ -13,6 +13,7 @@ module.exports = {
       },
       fontSize: {
         'primary-font': '18px',
+        'secondary-font': '16px',
       },
       colors: {
         'primary-color': '#3b82f6',
