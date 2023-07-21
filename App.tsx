@@ -16,6 +16,7 @@ import RegisterScreen from './screens/auth/Register'
 import BottomTabs from './components/Main/BottomTabs'
 import Header from './components/Main/Header'
 import DetailBook from './screens/DetailBook'
+import Profile from './screens/Profile'
 
 const Stack = createNativeStackNavigator()
 
@@ -44,6 +45,11 @@ function App(): JSX.Element {
                         <Stack.Screen
                             name='DetailBook'
                             component={DetailBook}
+                        />
+                        <Stack.Screen
+                            name='Profile'
+                            component={Profile}
+                            // options={{ headerShown: false }}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
