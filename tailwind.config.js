@@ -14,11 +14,16 @@ module.exports = {
       fontSize: {
         'primary-font': '18px',
         'secondary-font': '16px',
+        'third-font': '14px',
+        'large-font': '20px',
       },
       colors: {
         'primary-color': '#3b82f6',
+        'secondary-color': '#dc2626',
         'third-color': '#c026d3',
         'fourth-color': '#fecdd3',
+        'portal-color': '#fce7f3',
+        'price-color': '#ef4444',
         'error': '#ef4444',
       },
     },

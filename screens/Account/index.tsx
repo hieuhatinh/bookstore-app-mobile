@@ -14,6 +14,11 @@ const listButton = [
         screenName: '',
     },
     {
+        title: 'Đơn hàng của bạn',
+        iconName: 'application-edit-outline',
+        screenName: '',
+    },
+    {
         title: 'Chính sách bảo mật',
         iconName: 'shield-lock-outline',
         screenName: '',

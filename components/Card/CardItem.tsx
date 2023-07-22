@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Card } from 'react-native-paper'
+import { Badge, Card } from 'react-native-paper'
 
 interface IDataItem {
     id: number
@@ -37,6 +37,12 @@ const CardItem = ({ data, navigation }: IData) => {
                             {data.name}
                         </Text>
                         <Text>{data.author}</Text>
+                        <Text className='mt-1 text-secondary-font text-price-color'>
+                            100.000{' '}
+                            <Badge className='text-secondary-font text-price-color bg-transparent'>
+                                đ
+                            </Badge>
+                        </Text>
                     </Card.Content>
                 </Card>
             </TouchableOpacity>

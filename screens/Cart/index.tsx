@@ -151,15 +151,9 @@ const CartScreen = ({ navigation }: any) => {
                     <Text className='text-primary-font font-bold'>
                         Sub total:{' '}
                     </Text>
-                    <Text className='text-secondary-font'>
+                    <Text className='text-secondary-font text-price-color'>
                         {totalPrice}{' '}
-                        <Badge
-                            style={{
-                                backgroundColor: 'white',
-                                color: 'red',
-                                fontSize: 16,
-                            }}
-                        >
+                        <Badge className='bg-transparent text-price-color text-secondary-font'>
                             đ
                         </Badge>
                     </Text>
@@ -168,15 +162,9 @@ const CartScreen = ({ navigation }: any) => {
                     <Text className='text-primary-font font-bold'>
                         Shipping:{' '}
                     </Text>
-                    <Text className='text-secondary-font'>
+                    <Text className='text-secondary-font text-price-color'>
                         0.0{' '}
-                        <Badge
-                            style={{
-                                backgroundColor: 'white',
-                                color: 'red',
-                                fontSize: 16,
-                            }}
-                        >
+                        <Badge className='bg-transparent text-price-color text-secondary-font'>
                             đ
                         </Badge>
                     </Text>
@@ -184,15 +172,9 @@ const CartScreen = ({ navigation }: any) => {
                 <Divider className='my-1 h-[1px]' />
                 <View className='flex flex-row justify-between'>
                     <Text className='text-primary-font font-bold'>Total: </Text>
-                    <Text className='text-secondary-font'>
+                    <Text className='text-secondary-font text-price-color'>
                         {totalPrice}{' '}
-                        <Badge
-                            style={{
-                                backgroundColor: 'white',
-                                color: 'red',
-                                fontSize: 16,
-                            }}
-                        >
+                        <Badge className='bg-transparent text-price-color text-secondary-font'>
                             đ
                         </Badge>
                     </Text>

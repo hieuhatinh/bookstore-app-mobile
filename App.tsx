@@ -4,8 +4,8 @@
  *
  * @format
  */
-import React from 'react'
-import { PaperProvider } from 'react-native-paper'
+import React, { useState } from 'react'
+import { IconButton, PaperProvider } from 'react-native-paper'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -17,10 +17,14 @@ import BottomTabs from './components/Main/BottomTabs'
 import Header from './components/Main/Header'
 import DetailBook from './screens/DetailBook'
 import Profile from './screens/Profile'
+import HeaderDetail from './components/DetailBook/HeaderDetail'
+import ProductDescription from './screens/DetailBook/ProductDescription'
 
 const Stack = createNativeStackNavigator()
 
 function App(): JSX.Element {
+    const [headerTransparent, setHeaderTransparent] = useState(true)
+
     return (
         <SafeAreaProvider>
             <PaperProvider>
@@ -45,11 +49,27 @@ function App(): JSX.Element {
                         <Stack.Screen
                             name='DetailBook'
                             component={DetailBook}
+                            options={{
+                                headerBackVisible: true,
+                                // headerTransparent: headerTransparent,
+                                headerTitleAlign: 'left',
+                                title: '',
+                                headerRight: (props) => <HeaderDetail />,
+                            }}
                         />
+                        <Stack.Screen name='Profile' component={Profile} />
                         <Stack.Screen
-                            name='Profile'
-                            component={Profile}
-                            // options={{ headerShown: false }}
+                            name='ProductDescription'
+                            component={ProductDescription}
+                            options={({ navigation }) => ({
+                                title: 'Mô tả chi tiết',
+                                headerLeft: () => (
+                                    <IconButton
+                                        icon='close'
+                                        onPress={() => navigation.goBack()}
+                                    />
+                                ),
+                            })}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>

@@ -94,11 +94,11 @@ const CartItemCart = (props: IPropCartItem) => {
                                 {item.name}
                             </Text>
                         </TouchableOpacity>
-                        <Text className='text-red-500'>
+                        <Text className='text-price-color'>
                             {item.price}{' '}
                             <Badge
                                 size={30}
-                                className='rounded-full bg-transparent text-red-500'
+                                className='rounded-full bg-transparent text-price-color'
                             >
                                 đ
                             </Badge>
