@@ -116,11 +116,7 @@ const HomeScreen = ({ navigation }: any) => {
                 <HomeTabs.Screen key={item.id} name={item.title}>
                     {() => (
                         <GestureHandlerRootView>
-                            <ProductList
-                                category={item.param}
-                                data={data}
-                                navigation={navigation}
-                            />
+                            <ProductList category={item.param} data={data} />
                         </GestureHandlerRootView>
                     )}
                 </HomeTabs.Screen>

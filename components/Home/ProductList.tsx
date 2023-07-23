@@ -11,19 +11,16 @@ interface IDataItem {
 interface IPropsProductList {
     data: IDataItem[] | undefined | null
     category: string | undefined | null
-    navigation: any
 }
 
 const ProductList = (props: IPropsProductList) => {
-    const { data, category, navigation } = props
+    const { data, category } = props
 
     return (
         <FlatList
             className='flex w-full pt-1'
             data={data}
-            renderItem={({ item, index }) => (
-                <CardItem data={item} navigation={navigation} />
-            )}
+            renderItem={({ item, index }) => <CardItem data={item} />}
             keyExtractor={(item) => item.id.toString()}
             numColumns={2}
             scrollEnabled={true}

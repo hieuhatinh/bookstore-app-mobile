@@ -1,3 +1,4 @@
+import { Link, useNavigation } from '@react-navigation/native'
 import { Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Badge, Card } from 'react-native-paper'
@@ -11,10 +12,11 @@ interface IDataItem {
 
 interface IData {
     data: IDataItem
-    navigation: any
 }
 
-const CardItem = ({ data, navigation }: IData) => {
+const CardItem = ({ data }: IData) => {
+    const navigation: any = useNavigation()
+
     return (
         <View className='w-1/2 h-full'>
             <TouchableOpacity

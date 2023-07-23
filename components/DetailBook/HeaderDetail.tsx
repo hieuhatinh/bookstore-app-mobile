@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { View } from 'react-native'
 import { Badge, IconButton, Menu } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
 
 const HeaderDetail = () => {
+    const navigation: any = useNavigation()
+
     const [visible, setVisible] = useState(false)
 
     const openMenu = () => setVisible(true)
@@ -12,7 +15,10 @@ const HeaderDetail = () => {
         <View>
             <View className='pl-5 flex flex-row items-center justify-center'>
                 <View className='relative'>
-                    <IconButton icon='cart-minus' />
+                    <IconButton
+                        icon='cart-minus'
+                        onPress={() => navigation.navigate('Cart')}
+                    />
                     <Badge className='absolute top-0 right-0'>3</Badge>
                 </View>
 

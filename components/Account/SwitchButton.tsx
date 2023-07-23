@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useNavigation } from '@react-navigation/native'
 
 interface IPropItem {
     title: string
@@ -10,11 +11,11 @@ interface IPropItem {
 
 interface IPropSwitchButton {
     item: IPropItem
-    navigation: any
 }
 
 const SwitchButton = (props: IPropSwitchButton) => {
-    const { item, navigation } = props
+    const navigation: any = useNavigation()
+    const { item } = props
 
     return (
         <TouchableOpacity

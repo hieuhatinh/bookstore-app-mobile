@@ -140,7 +140,6 @@ const CartScreen = ({ navigation }: any) => {
                             setCheckboxes={setCheckboxes}
                             handleCheckboxChange={handleCheckboxChange}
                             index={index}
-                            navigation={navigation}
                         />
                     )}
                     keyExtractor={(item) => item.id.toString()}

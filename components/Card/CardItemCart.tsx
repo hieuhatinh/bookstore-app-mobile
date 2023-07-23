@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { TouchableOpacity, Image, View, Text, Alert } from 'react-native'
 import { Badge, Checkbox, IconButton } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
 
 interface IPropItem {
     id: number
@@ -20,19 +21,13 @@ interface IPropCartItem {
     handleCheckboxChange: (index: number, price: number) => void
     setCheckboxes: Dispatch<SetStateAction<ICheckBox[]>>
     index: number
-    navigation: any
     item: IPropItem
 }
 
 const CartItemCart = (props: IPropCartItem) => {
-    const {
-        checkboxes,
-        handleCheckboxChange,
-        index,
-        navigation,
-        item,
-        setCheckboxes,
-    } = props
+    const navigation: any = useNavigation()
+    const { checkboxes, handleCheckboxChange, index, item, setCheckboxes } =
+        props
     const [quantityProduct, setQuantityProduct] = useState(1)
 
     const handlePressPlus = () => {

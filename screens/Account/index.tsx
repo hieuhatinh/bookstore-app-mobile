@@ -48,11 +48,7 @@ const AccountScreen = ({ navigation }: any) => {
                     </View>
                     <View className='w-full mt-6'>
                         {listButton.map((item) => (
-                            <SwitchButton
-                                key={item.title}
-                                item={item}
-                                navigation={navigation}
-                            />
+                            <SwitchButton key={item.title} item={item} />
                         ))}
                     </View>
                 </View>
