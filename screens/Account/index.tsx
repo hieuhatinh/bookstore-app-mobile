@@ -60,7 +60,7 @@ const AccountScreen = ({ navigation }: any) => {
                 }
 
                 const data = JSON.parse(value)
-                setUserName(data.userName)
+                setUserName(data?.userName)
             }
 
             getToken()

@@ -16,13 +16,14 @@ interface IPropSwitchButton {
 }
 
 const SwitchButton = (props: IPropSwitchButton) => {
+    const navigation: any = useNavigation()
     const { item, setUserLogin } = props
 
     const handlePress = async () => {
         if (item.title.trim().toLowerCase() === 'đăng xuất') {
-            setUserLogin(false)
             await AsyncStorage.removeItem('AccessToken')
         }
+        navigation.navigate(item.screenName)
     }
 
     return (
