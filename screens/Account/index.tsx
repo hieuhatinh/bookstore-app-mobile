@@ -1,8 +1,21 @@
-import { View, Text } from 'react-native'
-import { Avatar, Button } from 'react-native-paper'
+import { View, Text, FlatList, SectionList } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import {
+    ActivityIndicator,
+    Avatar,
+    Button,
+    MD2Colors,
+} from 'react-native-paper'
 import SwitchButton from '../../components/Account/SwitchButton'
+import { useEffect, useState } from 'react'
 
-const listButton = [
+interface IPropItem {
+    title: string
+    iconName: string
+    screenName: string
+}
+
+const buttons = [
     {
         title: 'Cài đặt tài khoản',
         iconName: 'lock',
@@ -31,7 +44,30 @@ const listButton = [
 ]
 
 const AccountScreen = ({ navigation }: any) => {
-    const userLogin = true
+    const [userLogin, setUserLogin] = useState<boolean>(false)
+    const [useName, setUserName] = useState<string>()
+    const [avtar, setAvatar] = useState<string>()
+
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+            const getToken = async () => {
+                const value: any = await AsyncStorage.getItem('AccessToken')
+
+                if (value !== null) {
+                    setUserLogin(true)
+                } else {
+                    setUserLogin(false)
+                }
+
+                const data = JSON.parse(value)
+                setUserName(data.userName)
+            }
+
+            getToken()
+        })
+
+        return focusListener
+    }, [navigation])
 
     return (
         <>
@@ -40,16 +76,27 @@ const AccountScreen = ({ navigation }: any) => {
                     <View className='flex justify-between items-center'>
                         <Avatar.Image
                             size={80}
-                            source={require('../../assets/images/avatar_mac_dinh.jpg')}
+                            source={
+                                avtar ||
+                                require('../../assets/images/avatar_mac_dinh.jpg')
+                            }
                         />
                         <Text className='text-secondary-font text-third-color mt-2'>
-                            nguyentrunghieu@gmail.com
+                            {useName}
                         </Text>
                     </View>
                     <View className='w-full mt-6'>
-                        {listButton.map((item) => (
-                            <SwitchButton key={item.title} item={item} />
-                        ))}
+                        <FlatList
+                            data={buttons}
+                            renderItem={({ item }) => (
+                                <SwitchButton
+                                    key={item.title}
+                                    item={item}
+                                    setUserLogin={setUserLogin}
+                                />
+                            )}
+                            keyExtractor={(item) => item.title}
+                        />
                     </View>
                 </View>
             ) : (

@@ -12,11 +12,13 @@
     "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\""
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.1",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/material-bottom-tabs": "^6.2.16",
     "@react-navigation/material-top-tabs": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
+    "axios": "^1.4.0",
     "formik": "^2.4.2",
     "nativewind": "^2.0.11",
     "react": "18.2.0",

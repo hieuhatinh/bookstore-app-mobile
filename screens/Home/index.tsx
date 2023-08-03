@@ -98,6 +98,7 @@ const data = [
 ]
 
 const HomeScreen = ({ navigation }: any) => {
+    console.log(typeof data)
     return (
         <HomeTabs.Navigator
             screenOptions={{
