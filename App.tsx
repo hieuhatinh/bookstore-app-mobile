@@ -19,7 +19,6 @@ import DetailBook from './screens/DetailBook'
 import Profile from './screens/Profile'
 import HeaderDetail from './components/DetailBook/HeaderDetail'
 import ProductDescription from './screens/DetailBook/ProductDescription'
-import LoadingLogout from './screens/Account/LoadingLogout'
 
 const Stack = createNativeStackNavigator()
 
@@ -71,12 +70,6 @@ function App(): JSX.Element {
                                     />
                                 ),
                             })}
-                        />
-
-                        {/* Loading */}
-                        <Stack.Screen
-                            name='LoadingLogout'
-                            component={LoadingLogout}
                         />
                     </Stack.Navigator>
                 </NavigationContainer>

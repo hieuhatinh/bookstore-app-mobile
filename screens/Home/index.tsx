@@ -60,37 +60,37 @@ const tabBarList = [
 
 const data = [
     {
-        id: 1,
+        _id: 1,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
     },
     {
-        id: 2,
+        _id: 2,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
     },
     {
-        id: 3,
+        _id: 3,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
     },
     {
-        id: 4,
+        _id: 4,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
     },
     {
-        id: 5,
+        _id: 5,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
     },
     {
-        id: 6,
+        _id: 6,
         name: '3 người thầy vĩ đại',
         author: 'Robin Sharma',
         image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
@@ -98,7 +98,6 @@ const data = [
 ]
 
 const HomeScreen = ({ navigation }: any) => {
-    console.log(typeof data)
     return (
         <HomeTabs.Navigator
             screenOptions={{
@@ -114,7 +113,7 @@ const HomeScreen = ({ navigation }: any) => {
             }}
         >
             {tabBarList.map((item) => (
-                <HomeTabs.Screen key={item.id} name={item.title}>
+                <HomeTabs.Screen key={item._id} name={item.title}>
                     {() => (
                         <GestureHandlerRootView>
                             <ProductList category={item.param} data={data} />

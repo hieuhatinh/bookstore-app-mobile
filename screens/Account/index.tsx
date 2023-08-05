@@ -89,11 +89,7 @@ const AccountScreen = ({ navigation }: any) => {
                         <FlatList
                             data={buttons}
                             renderItem={({ item }) => (
-                                <SwitchButton
-                                    key={item.title}
-                                    item={item}
-                                    setUserLogin={setUserLogin}
-                                />
+                                <SwitchButton key={item.title} item={item} />
                             )}
                             keyExtractor={(item) => item.title}
                         />

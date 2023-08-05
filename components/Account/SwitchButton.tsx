@@ -12,12 +12,11 @@ interface IPropItem {
 
 interface IPropSwitchButton {
     item: IPropItem
-    setUserLogin: any
 }
 
 const SwitchButton = (props: IPropSwitchButton) => {
     const navigation: any = useNavigation()
-    const { item, setUserLogin } = props
+    const { item } = props
 
     const handlePress = async () => {
         if (item.title.trim().toLowerCase() === 'đăng xuất') {

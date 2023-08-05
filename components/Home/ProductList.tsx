@@ -1,15 +1,9 @@
 import { FlatList } from 'react-native'
 import CardItem from '../Card/CardItem'
-
-interface IDataItem {
-    id: number
-    name: string
-    author: string
-    image: string
-}
+import { IProduct } from '../../utilities/interface/product'
 
 interface IPropsProductList {
-    data: IDataItem[] | undefined | null
+    data: IProduct[] | undefined | null
     category: string | undefined | null
 }
 
@@ -20,8 +14,8 @@ const ProductList = (props: IPropsProductList) => {
         <FlatList
             className='flex w-full pt-1'
             data={data}
-            renderItem={({ item, index }) => <CardItem data={item} />}
-            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <CardItem data={item} />}
+            keyExtractor={(item) => item._id.toString()}
             numColumns={2}
             scrollEnabled={true}
         />

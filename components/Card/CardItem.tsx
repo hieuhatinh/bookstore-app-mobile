@@ -2,16 +2,10 @@ import { Link, useNavigation } from '@react-navigation/native'
 import { Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Badge, Card } from 'react-native-paper'
-
-interface IDataItem {
-    id: number
-    name: string
-    author: string
-    image: string
-}
+import { IProduct } from '../../utilities/interface/product'
 
 interface IData {
-    data: IDataItem
+    data: IProduct
 }
 
 const CardItem = ({ data }: IData) => {
