@@ -23,6 +23,11 @@ const authApi = {
 
     async updateProfile () {
 
+    },
+
+    async getProfileSeller ({idSeller}: {idSeller: string}) {
+        const url = `/auth/${idSeller}`
+        return await axiosClient.get(url)
     }
 }
 

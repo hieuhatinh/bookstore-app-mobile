@@ -7,6 +7,7 @@ interface ISearch {
 
 const searchApi = {
     async search ({searchString, _page}: ISearch) {
+        searchString = searchString.trim().toLocaleLowerCase()
         const url = `/product/search?searchString=${searchString}&_page=${_page}`
         const data = {
             searchString, _page

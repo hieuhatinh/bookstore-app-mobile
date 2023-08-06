@@ -8,3 +8,12 @@ export interface IValuesRegister {
     password: string
     confirmPassword: string
 }
+
+export interface IValueUser {
+    email: string, 
+    fullName: string
+    password: string,
+    phoneNumber: string
+    avatar: string
+    role: string
+}

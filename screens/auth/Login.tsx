@@ -2,21 +2,20 @@ import { useState } from 'react'
 import { Formik } from 'formik'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Text, View, ScrollView } from 'react-native'
-import { Button, Divider, Snackbar, TextInput } from 'react-native-paper'
+import { Button, Divider, TextInput } from 'react-native-paper'
 
 import schemaFormLogin from '../../utilities/schema/login'
 import SocialNetwork from './SocialNetwork'
 import authApi from '../../api/authApi'
 import { IValuesAuth } from '../../utilities/interface/auth'
+import SnackbarMess from '../../components/Notification/SnackbarMess'
 
 const LoginScreen = ({ navigation }: any) => {
     const [messageError, setMessageError] = useState('')
 
-    const onDismissSnackBar = () => setMessageError('')
-
     return (
         <ScrollView>
-            <View className='h-full flex justify-start items-start m-4'>
+            <View className='relative h-full flex justify-start items-start m-4'>
                 <View className='w-full'>
                     <Formik
                         initialValues={{ email: '', password: '' }}
@@ -150,13 +149,10 @@ const LoginScreen = ({ navigation }: any) => {
                 </View>
 
                 {/* Hiển thị message thông báo */}
-                <Snackbar
-                    className='pb-2 mt-[30px]'
-                    visible={!!messageError}
-                    onDismiss={onDismissSnackBar}
-                >
-                    {messageError}
-                </Snackbar>
+                <SnackbarMess
+                    message={messageError}
+                    setMessage={setMessageError}
+                />
             </View>
         </ScrollView>
     )

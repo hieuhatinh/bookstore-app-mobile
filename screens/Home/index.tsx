@@ -7,52 +7,52 @@ const HomeTabs = createMaterialTopTabNavigator()
 
 const tabBarList = [
     {
-        id: 1,
+        _id: 1,
         title: 'Tất cả',
         param: 'all',
     },
     {
-        id: 2,
+        _id: 2,
         title: 'Văn học trong nước',
         param: 'domestic_literature',
     },
     {
-        id: 3,
+        _id: 3,
         title: 'Văn học nước ngoài',
         param: 'foreign_literature',
     },
     {
-        id: 4,
+        _id: 4,
         title: 'Kinh tế',
         param: 'economy',
     },
     {
-        id: 5,
+        _id: 5,
         title: 'Tâm lý giáo dục',
         param: 'educational_psychology',
     },
     {
-        id: 6,
+        _id: 6,
         title: 'Triết học',
         param: 'philosophy',
     },
     {
-        id: 7,
+        _id: 7,
         title: 'Tôn giáo',
         param: 'religion',
     },
     {
-        id: 8,
+        _id: 8,
         title: 'Truyện',
         param: 'comic',
     },
     {
-        id: 9,
+        _id: 9,
         title: 'Lịch sử - Địa lý',
         param: 'history_geography',
     },
     {
-        id: 10,
+        _id: 10,
         title: 'Khoa học',
         param: 'science',
     },

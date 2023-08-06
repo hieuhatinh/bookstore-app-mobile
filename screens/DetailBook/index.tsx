@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Text,
     View,
@@ -9,13 +9,20 @@ import {
 } from 'react-native'
 import { Avatar, Badge, Button, IconButton, Portal } from 'react-native-paper'
 import { Link } from '@react-navigation/native'
+import authApi from '../../api/authApi'
+import { IValueUser } from '../../utilities/interface/auth'
+import SnackbarMess from '../../components/Notification/SnackbarMess'
 
 const description =
     'Tôi đã nếm trải nhiều thất bại trong hành trình đi qua những tháng ngày của mình. Thế nhưng, mỗi chướng ngại cuối cùng đều lại chính là một bàn đạp đưa tôi gần hơn nữa tới chân lý trong tâm khảm và cuộc đời tốt đẹp nhất của mình. Cho dù tôi có thu thập được bao nhiêu tài sản vật chất đi chăng nữa thì cái thằng người mà tôi nhìn thấy trong tấm gương phòng tắm mỗi buổi sáng vẫn y nguyên – tôi không hề hạnh phúc hơn và không hề cảm thấy tốt hơn tí nào. Suy ngẫm nhiều hơn về thực trạng cuộc sống của mình, tôi bắt đầu nhận thức được sự trống rỗng ngay trong tim mình. Tôi bắt đầu chú ý đến những tiếng thầm thì lặng lẽ của con tim, những điều chỉ dẫn tôi rời bỏ nghề nghiệp mình đã chọn và bắt đầu quá trình tìm kiếm tâm hồn một cách nghiêm túc. Tôi bắt đầu suy nghĩ về lý do tại sao tôi lại ở đây, trên hành tinh này, và nhiệm vụ cụ thể của tôi là gì. Tôi tự hỏi tại sao cuộc đời mình lại không có tác dụng và cần phải thực hiện những thay đổi sâu sắc nào để giúp mình đi đúng hướng. Tôi xem xét những niềm tin cốt lõi, những giả định, và những lăng kính mà mình nhìn ra thế giới, và tôi tự cam kết làm sạch những lăng kính không lành mạnh.'
 
-const DetailBook = () => {
+const DetailBook = ({ navigation, route }: any) => {
+    const { data } = route.params
+
     const [buttonPositionY, setButtonPositionY] = useState<any>()
     const [visible, setVisible] = useState<boolean>(false)
+    const [sellerProfile, setSellerProfile] = useState<IValueUser>()
+    const [message, setMessage] = useState<string>()
 
     const handleScroll = (event: any) => {
         const result =
@@ -24,6 +31,25 @@ const DetailBook = () => {
         setVisible(result)
     }
 
+    useEffect(() => {
+        const getProfileSeller = async () => {
+            let idSeller = data.seller
+            const result = await authApi.getProfileSeller({ idSeller })
+
+            if (
+                result.data.statusCode >= 200 &&
+                result.data.statusCode <= 299
+            ) {
+                setMessage(result.data.message || 'Thành công')
+                setSellerProfile(result.data.data)
+            } else {
+                setMessage(result.data.message || 'Có lỗi xảy ra')
+            }
+        }
+
+        getProfileSeller()
+    }, [])
+
     return (
         <ScrollView className='relative h-full' onScroll={handleScroll}>
             <SafeAreaView className='flex'>
@@ -31,7 +57,7 @@ const DetailBook = () => {
                 <View className='flex-1 bg-white px-3 pb-3'>
                     <Image
                         source={{
-                            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyN-G0fuJGalSACdC5HKM8OJacpyBr7TLciA&usqp=CAU',
+                            uri: data.image,
                         }}
                         resizeMode='contain'
                         height={255}
@@ -39,10 +65,10 @@ const DetailBook = () => {
                     />
                     <View className='mt-2'>
                         <Text className='text-large-font text-black'>
-                            3 người thầy vĩ đại
+                            {data.name}
                         </Text>
                         <Text className='text-secondary-font text-price-color mt-1'>
-                            100.000{' '}
+                            {data.price}{' '}
                             <Badge className='text-secondary-font bg-transparent text-price-color'>
                                 đ
                             </Badge>
@@ -78,14 +104,22 @@ const DetailBook = () => {
                         className='flex flex-row flex-1 justify-between items-center'
                     >
                         <View className='flex flex-row justify-center items-center'>
-                            <Avatar.Image
-                                source={{
-                                    uri: 'https://salt.tikicdn.com/cache/w220/ts/seller/2e/85/b7/e76104ae5f1beaf244f319e2f0d2d413.jpg',
-                                }}
-                                size={40}
-                            />
+                            {sellerProfile?.avatar ? (
+                                <Avatar.Image
+                                    source={{
+                                        uri: sellerProfile?.avatar,
+                                    }}
+                                    size={40}
+                                />
+                            ) : (
+                                <Avatar.Image
+                                    source={require('../../assets/images/avatar-seller-default.png')}
+                                    size={40}
+                                />
+                            )}
                             <Text className='ml-2 text-primary-font text-black font-bold'>
-                                Phương Đông Books
+                                {sellerProfile?.fullName ||
+                                    sellerProfile?.email}
                             </Text>
                         </View>
                         <IconButton icon='chevron-right' />
@@ -124,26 +158,34 @@ const DetailBook = () => {
                     <Text className='text-primary-font text-black font-bold'>
                         Mô tả sản phẩm
                     </Text>
-                    <Text
-                        ellipsizeMode='tail'
-                        numberOfLines={4}
-                        className='text-third-font mt-1'
-                    >
-                        {description}
-                    </Text>
-                    <Link
-                        to={{
-                            screen: 'ProductDescription',
-                            params: { description: description },
-                        }}
-                        style={{
-                            color: '#3b82f6',
-                            textAlign: 'center',
-                            marginTop: 4,
-                        }}
-                    >
-                        Xem chi tiết
-                    </Link>
+                    {data.description ? (
+                        <>
+                            <Text
+                                ellipsizeMode='tail'
+                                numberOfLines={4}
+                                className='text-third-font mt-1'
+                            >
+                                {data.description}
+                            </Text>
+                            <Link
+                                to={{
+                                    screen: 'ProductDescription',
+                                    params: { description: data.description },
+                                }}
+                                style={{
+                                    color: '#3b82f6',
+                                    textAlign: 'center',
+                                    marginTop: 4,
+                                }}
+                            >
+                                Xem chi tiết
+                            </Link>
+                        </>
+                    ) : (
+                        <Text className='text-center py-2'>
+                            Không có thông tin mô tả sản phẩm chi tiết
+                        </Text>
+                    )}
                 </View>
 
                 {/* khách hàng đánh giá */}
@@ -157,43 +199,7 @@ const DetailBook = () => {
                         </Text>
                         <IconButton icon='chevron-right' />
                     </TouchableOpacity>
-                    <Text>
-                        “Tôi đã nếm trải nhiều thất bại trong hành trình đi qua
-                        những tháng ngày của mình. Thế nhưng, mỗi chướng ngại
-                        cuối cùng đều lại chính là một bàn đạp đưa tôi gần hơn
-                        nữa tới chân lý trong tâm khảm và cuộc đời tốt đẹp nhất
-                        của mình. Cho dù tôi có thu thập được bao nhiêu tài sản
-                        vật chất đi chăng nữa thì cái thằng người mà tôi nhìn
-                        thấy trong tấm gương phòng tắm mỗi buổi sáng vẫn y
-                        nguyên – tôi không hề hạnh phúc hơn và không hề cảm thấy
-                        tốt hơn tí nào. Suy ngẫm nhiều hơn về thực trạng cuộc
-                        sống của mình, tôi bắt đầu nhận thức được sự trống rỗng
-                        ngay trong tim mình. Tôi bắt đầu chú ý đến những tiếng
-                        thầm thì lặng lẽ của con tim, những điều chỉ dẫn tôi rời
-                        bỏ nghề nghiệp mình đã chọn và bắt đầu quá trình tìm
-                        kiếm tâm hồn một cách nghiêm túc. Tôi bắt đầu suy nghĩ
-                        về lý do tại sao tôi lại ở đây, trên hành tinh này, và
-                        nhiệm vụ cụ thể của tôi là gì. Tôi tự hỏi tại sao cuộc
-                        đời mình lại không có tác dụng và cần phải thực hiện
-                        những thay đổi sâu sắc nào để giúp mình đi đúng hướng.
-                        Tôi xem xét những niềm tin cốt lõi, những giả định, và
-                        những lăng kính mà mình nhìn ra thế giới, và tôi tự cam
-                        kết làm sạch những lăng kính không lành mạnh.” “Cuốn
-                        sách này là một tác phẩm hư cấu. Đây là câu chuyện về
-                        một người đàn ông có tên Jack Valentine mà đường đời có
-                        nhiều điểm giống với tôi. Có cảm nhận rất không đầy đủ
-                        với tư cách một con người, anh ấy lên kế hoạch tìm kiếm
-                        tri thức để sống một cuộc sống hạnh phúc hơn, khoẻ khoắn
-                        hơn và đẹp hơn.” Những “Câu hỏi cuối cùng” là một điều
-                        kì lạ mà Jack nghe được từ người bệnh nhân già nằm cùng
-                        phòng với anh – ông Cal. Chỉ sau một buổi tối trò chuyện
-                        cùng ông, Jack đã nhận thấy những sự thay đổi đang diễn
-                        ra trong mình. Và từ đây, chuyến hành trình đến Rome,
-                        Hawaii và New York cùng những khám phá mới mẻ mà anh học
-                        được từ ba người thầy vĩ đại trong cuộc đời đã giúp anh
-                        trả lời được ba câu hỏi mà cha anh – Cal Valentine đã
-                        nói trước khi ông qua đời:
-                    </Text>
+                    <Text>{data.review}</Text>
                 </View>
                 <Portal>
                     {visible && (
@@ -221,6 +227,9 @@ const DetailBook = () => {
                         </View>
                     )}
                 </Portal>
+
+                {/* Hiển thị thông báo */}
+                <SnackbarMess message={message} setMessage={setMessage} />
             </SafeAreaView>
         </ScrollView>
     )

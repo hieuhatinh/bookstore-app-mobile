@@ -7,6 +7,7 @@ import ProductList from '../../components/Home/ProductList'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import searchApi from '../../api/searchApi'
 import { IProduct } from '../../utilities/interface/product'
+import SnackbarMess from '../../components/Notification/SnackbarMess'
 
 const SearchScreen = ({ navigation }: any) => {
     const insets = useSafeAreaInsets()
@@ -15,12 +16,10 @@ const SearchScreen = ({ navigation }: any) => {
     const [dataResult, setDataResult] = useState<IProduct[] | any>()
 
     const onChangeSearch = (query: string) => setSearchString(query)
-    const onDismissSnackBar = () => setMessage('')
 
     const handleKeyPressEnter = async () => {
         let _page = 1
         const result = await searchApi.search({ searchString, _page })
-        console.log(result.data)
 
         let statusCode = result.data.statusCode
 
@@ -30,7 +29,6 @@ const SearchScreen = ({ navigation }: any) => {
         } else {
             setMessage(result.data.message || 'Xảy ra lỗi')
         }
-        console.log(dataResult.length)
     }
 
     return (
@@ -61,13 +59,7 @@ const SearchScreen = ({ navigation }: any) => {
             )}
 
             {/* Hiển thị message thông báo */}
-            <Snackbar
-                className='pb-2 mt-[30px] absolute bottom-2 w-full'
-                visible={!!message}
-                onDismiss={onDismissSnackBar}
-            >
-                {message}
-            </Snackbar>
+            <SnackbarMess message={message} setMessage={setMessage} />
         </SafeAreaView>
     )
 }

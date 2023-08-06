@@ -1,4 +1,4 @@
-import { Link, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Badge, Card } from 'react-native-paper'
@@ -16,7 +16,7 @@ const CardItem = ({ data }: IData) => {
             <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
-                    navigation.navigate('DetailBook')
+                    navigation.navigate('DetailBook', { data })
                 }}
                 className='w-full'
             >

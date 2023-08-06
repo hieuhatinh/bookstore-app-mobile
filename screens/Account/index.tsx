@@ -45,8 +45,8 @@ const buttons = [
 
 const AccountScreen = ({ navigation }: any) => {
     const [userLogin, setUserLogin] = useState<boolean>(false)
-    const [useName, setUserName] = useState<string>()
-    const [avtar, setAvatar] = useState<string>()
+    const [userName, setUserName] = useState<string>()
+    const [avatar, setAvatar] = useState<string>()
 
     useEffect(() => {
         const focusListener = navigation.addListener('focus', () => {
@@ -77,12 +77,13 @@ const AccountScreen = ({ navigation }: any) => {
                         <Avatar.Image
                             size={80}
                             source={
-                                avtar ||
+                                avatar ||
                                 require('../../assets/images/avatar_mac_dinh.jpg')
                             }
+                            className='object-contain'
                         />
                         <Text className='text-secondary-font text-third-color mt-2'>
-                            {useName}
+                            {userName}
                         </Text>
                     </View>
                     <View className='w-full mt-6'>
