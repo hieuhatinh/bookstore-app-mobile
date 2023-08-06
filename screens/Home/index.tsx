@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
-import ProductList from '../../components/Home/ProductList'
+import Category from '../../components/Home/Category'
 
 const HomeTabs = createMaterialTopTabNavigator()
 
@@ -58,45 +57,6 @@ const tabBarList = [
     },
 ]
 
-const data = [
-    {
-        _id: 1,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        _id: 2,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        _id: 3,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        _id: 4,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        _id: 5,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-    {
-        _id: 6,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-    },
-]
-
 const HomeScreen = ({ navigation }: any) => {
     return (
         <HomeTabs.Navigator
@@ -113,13 +73,11 @@ const HomeScreen = ({ navigation }: any) => {
             }}
         >
             {tabBarList.map((item) => (
-                <HomeTabs.Screen key={item._id} name={item.title}>
-                    {() => (
-                        <GestureHandlerRootView>
-                            <ProductList category={item.param} data={data} />
-                        </GestureHandlerRootView>
-                    )}
-                </HomeTabs.Screen>
+                <HomeTabs.Screen
+                    key={item._id}
+                    name={item.title}
+                    children={() => <Category category={item.param} />}
+                />
             ))}
         </HomeTabs.Navigator>
     )

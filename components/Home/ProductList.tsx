@@ -4,11 +4,10 @@ import { IProduct } from '../../utilities/interface/product'
 
 interface IPropsProductList {
     data: IProduct[] | undefined | null
-    category: string | undefined | null
 }
 
 const ProductList = (props: IPropsProductList) => {
-    const { data, category } = props
+    const { data } = props
 
     return (
         <FlatList

@@ -48,7 +48,7 @@ const SearchScreen = ({ navigation }: any) => {
             />
             {dataResult?.length !== 0 ? (
                 <GestureHandlerRootView>
-                    <ProductList data={dataResult} category={null} />
+                    <ProductList data={dataResult} />
                 </GestureHandlerRootView>
             ) : (
                 <View className='flex justify-center items-center text-price-color h-full w-full'>
