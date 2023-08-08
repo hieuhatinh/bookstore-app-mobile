@@ -53,6 +53,7 @@ const Category = (props: IPropCategory) => {
             <GestureHandlerRootView
                 style={{
                     position: 'relative',
+                    height: '100%',
                 }}
             >
                 {books?.length !== 0 ? (

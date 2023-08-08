@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import { Text, View } from 'react-native'
+import { Alert, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Badge, Card } from 'react-native-paper'
 import { IProduct } from '../../utilities/interface/product'
@@ -23,13 +23,16 @@ const CardItem = ({ data }: IData) => {
                 <Card className='m-2 flex-1'>
                     <Card.Cover
                         source={{
-                            uri: data.image,
+                            uri: data.mainImage.path,
                         }}
                         width={50}
                         height={50}
                     />
                     <Card.Content>
-                        <Text className='text-base font-semibold'>
+                        <Text
+                            className='text-base font-semibold'
+                            numberOfLines={2}
+                        >
                             {data.name}
                         </Text>
                         <Text>{data.author}</Text>

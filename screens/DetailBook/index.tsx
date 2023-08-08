@@ -2,19 +2,17 @@ import { useState, useEffect } from 'react'
 import {
     Text,
     View,
-    Image,
     SafeAreaView,
     ScrollView,
     TouchableOpacity,
 } from 'react-native'
 import { Avatar, Badge, Button, IconButton, Portal } from 'react-native-paper'
 import { Link } from '@react-navigation/native'
+
 import authApi from '../../api/authApi'
 import { IValueUser } from '../../utilities/interface/auth'
 import SnackbarMess from '../../components/Notification/SnackbarMess'
-
-const description =
-    'Tôi đã nếm trải nhiều thất bại trong hành trình đi qua những tháng ngày của mình. Thế nhưng, mỗi chướng ngại cuối cùng đều lại chính là một bàn đạp đưa tôi gần hơn nữa tới chân lý trong tâm khảm và cuộc đời tốt đẹp nhất của mình. Cho dù tôi có thu thập được bao nhiêu tài sản vật chất đi chăng nữa thì cái thằng người mà tôi nhìn thấy trong tấm gương phòng tắm mỗi buổi sáng vẫn y nguyên – tôi không hề hạnh phúc hơn và không hề cảm thấy tốt hơn tí nào. Suy ngẫm nhiều hơn về thực trạng cuộc sống của mình, tôi bắt đầu nhận thức được sự trống rỗng ngay trong tim mình. Tôi bắt đầu chú ý đến những tiếng thầm thì lặng lẽ của con tim, những điều chỉ dẫn tôi rời bỏ nghề nghiệp mình đã chọn và bắt đầu quá trình tìm kiếm tâm hồn một cách nghiêm túc. Tôi bắt đầu suy nghĩ về lý do tại sao tôi lại ở đây, trên hành tinh này, và nhiệm vụ cụ thể của tôi là gì. Tôi tự hỏi tại sao cuộc đời mình lại không có tác dụng và cần phải thực hiện những thay đổi sâu sắc nào để giúp mình đi đúng hướng. Tôi xem xét những niềm tin cốt lõi, những giả định, và những lăng kính mà mình nhìn ra thế giới, và tôi tự cam kết làm sạch những lăng kính không lành mạnh.'
+import ImageBooks from '../../components/DetailBook/ImageBooks'
 
 const DetailBook = ({ navigation, route }: any) => {
     const { data } = route.params
@@ -31,6 +29,7 @@ const DetailBook = ({ navigation, route }: any) => {
         setVisible(result)
     }
 
+    // gọi API lấy thông tin của người bán
     useEffect(() => {
         const getProfileSeller = async () => {
             let idSeller = data.seller
@@ -55,14 +54,7 @@ const DetailBook = ({ navigation, route }: any) => {
             <SafeAreaView className='flex'>
                 {/* Sách và giá */}
                 <View className='flex-1 bg-white px-3 pb-3'>
-                    <Image
-                        source={{
-                            uri: data.image,
-                        }}
-                        resizeMode='contain'
-                        height={255}
-                        className='flex'
-                    />
+                    <ImageBooks images={data.images} />
                     <View className='mt-2'>
                         <Text className='text-large-font text-black'>
                             {data.name}
@@ -104,19 +96,14 @@ const DetailBook = ({ navigation, route }: any) => {
                         className='flex flex-row flex-1 justify-between items-center'
                     >
                         <View className='flex flex-row justify-center items-center'>
-                            {sellerProfile?.avatar ? (
-                                <Avatar.Image
-                                    source={{
-                                        uri: sellerProfile?.avatar,
-                                    }}
-                                    size={40}
-                                />
-                            ) : (
-                                <Avatar.Image
-                                    source={require('../../assets/images/avatar-seller-default.png')}
-                                    size={40}
-                                />
-                            )}
+                            <Avatar.Image
+                                source={
+                                    typeof sellerProfile?.avatar === 'string'
+                                        ? { uri: sellerProfile?.avatar }
+                                        : require('../../assets/images/avatar_seller_default.png')
+                                }
+                                size={40}
+                            />
                             <Text className='ml-2 text-primary-font text-black font-bold'>
                                 {sellerProfile?.fullName ||
                                     sellerProfile?.email}
