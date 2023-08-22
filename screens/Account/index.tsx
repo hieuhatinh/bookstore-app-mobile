@@ -1,11 +1,6 @@
-import { View, Text, FlatList, SectionList } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {
-    ActivityIndicator,
-    Avatar,
-    Button,
-    MD2Colors,
-} from 'react-native-paper'
+import { Avatar, Button } from 'react-native-paper'
 import SwitchButton from '../../components/Account/SwitchButton'
 import { useEffect, useState } from 'react'
 
@@ -15,7 +10,7 @@ interface IPropItem {
     screenName: string
 }
 
-const buttons = [
+const buttons: IPropItem[] = [
     {
         title: 'Cài đặt tài khoản',
         iconName: 'lock',
@@ -61,6 +56,7 @@ const AccountScreen = ({ navigation }: any) => {
 
                 const data = JSON.parse(value)
                 setUserName(data?.userName)
+                setAvatar(data?.avatar)
             }
 
             getToken()

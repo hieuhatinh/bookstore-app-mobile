@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { View, Text, FlatList, ScrollView } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { View, Text, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CartItemCart from '../../components/Card/CardItemCart'
 import { Badge, Checkbox, Divider } from 'react-native-paper'
@@ -70,6 +71,7 @@ const CartScreen = ({ navigation }: any) => {
     )
     const [checkedAll, setCheckedAll] = useState(false)
     const [totalPrice, setTotalPrice] = useState(0)
+    const [userLogin, setUserLogin] = useState<boolean>(false)
 
     const handleCheckboxChange = (index: number, price: number) => {
         const newCheckboxes = [...checkboxes]
@@ -98,6 +100,7 @@ const CartScreen = ({ navigation }: any) => {
         setCheckedAll(!checkedAll)
     }
 
+    // tính toán tổng tiền của số sản phẩm đã chọn
     useEffect(() => {
         const result = checkboxes.filter((item) => item.state === true)
 
@@ -107,6 +110,27 @@ const CartScreen = ({ navigation }: any) => {
 
         setTotalPrice(total)
     }, [checkboxes, checkedAll])
+
+    // check user đã đăng nhập chưa
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+            const getToken = async () => {
+                const value: any = await AsyncStorage.getItem('AccessToken')
+
+                if (value !== null) {
+                    setUserLogin(true)
+                } else {
+                    setUserLogin(false)
+                }
+            }
+
+            getToken()
+        })
+
+        return focusListener
+    }, [])
+
+    useEffect(() => {}, [userLogin])
 
     return (
         <SafeAreaView className='h-full'>

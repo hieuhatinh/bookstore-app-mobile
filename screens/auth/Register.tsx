@@ -20,6 +20,7 @@ const RegisterScreen = ({ navigation }: any) => {
                     <Formik
                         initialValues={{
                             email: '',
+                            phoneNumber: '',
                             password: '',
                             confirmPassword: '',
                         }}
@@ -27,9 +28,11 @@ const RegisterScreen = ({ navigation }: any) => {
                         onSubmit={async (values: IValuesRegister) => {
                             let email = values.email
                             let password = values.password
+                            let phoneNumber = values.phoneNumber
                             const result = await authApi.register({
                                 email,
                                 password,
+                                phoneNumber,
                             })
 
                             let statusCode = result?.data?.statusCode
@@ -54,6 +57,34 @@ const RegisterScreen = ({ navigation }: any) => {
                             isSubmitting,
                         }) => (
                             <View>
+                                <View>
+                                    <TextInput
+                                        label='PhoneNumber'
+                                        mode='outlined'
+                                        placeholder='Phone Number'
+                                        onChangeText={handleChange(
+                                            'phoneNumber',
+                                        )}
+                                        onBlur={handleBlur('phoneNumber')}
+                                        value={values.phoneNumber}
+                                        editable={true}
+                                        error={
+                                            !!(
+                                                touched.phoneNumber &&
+                                                errors.phoneNumber?.toString
+                                            )
+                                        }
+                                    />
+                                    {touched.phoneNumber &&
+                                    errors.phoneNumber?.toString ? (
+                                        <Text className='text-error'>
+                                            {touched.phoneNumber &&
+                                                errors.phoneNumber}
+                                        </Text>
+                                    ) : (
+                                        <></>
+                                    )}
+                                </View>
                                 <View>
                                     <TextInput
                                         label='Email'

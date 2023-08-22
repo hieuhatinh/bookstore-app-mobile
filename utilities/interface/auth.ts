@@ -1,12 +1,14 @@
 export interface IValuesAuth {
     email: string
     password: string
+    phoneNumber: string
 }
 
 export interface IValuesRegister {
     email: string
     password: string
-    confirmPassword: string
+    confirmPassword: string 
+    phoneNumber: string
 }
 
 export interface IValueUser {

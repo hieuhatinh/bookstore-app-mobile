@@ -18,7 +18,11 @@ const LoginScreen = ({ navigation }: any) => {
             <View className='relative h-full flex justify-start items-start m-4'>
                 <View className='w-full'>
                     <Formik
-                        initialValues={{ email: '', password: '' }}
+                        initialValues={{
+                            email: '',
+                            password: '',
+                            phoneNumber: '',
+                        }}
                         validationSchema={schemaFormLogin}
                         onSubmit={async (values: IValuesAuth) => {
                             const result = await authApi.login({ ...values })
@@ -31,7 +35,9 @@ const LoginScreen = ({ navigation }: any) => {
                                     userName:
                                         result?.data?.data?.fullName ||
                                         result?.data?.data?.email,
-                                    // avatar: result?.data?.data?.avatar?.path,
+                                    avatar: result?.data?.data?.avatar
+                                        ? result?.data?.data?.avatar.path
+                                        : null,
                                 }
                                 await AsyncStorage.setItem(
                                     'AccessToken',

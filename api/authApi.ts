@@ -1,4 +1,4 @@
-import { IValuesAuth } from "../utilities/interface/auth"
+import { IValuesAuth, IValuesRegister } from "../utilities/interface/auth"
 import axiosClient from "./axiosClient"
 
 const authApi = {
@@ -12,11 +12,12 @@ const authApi = {
         return await axiosClient.post(url, data)
     },
 
-    async register ({email, password}: IValuesAuth) {
+    async register ({email, password, phoneNumber}: IValuesAuth) {
         const url = '/auth/register'
         const data = {
             email, 
             password, 
+            phoneNumber
         }
         return await axiosClient.post(url, data)
     }, 

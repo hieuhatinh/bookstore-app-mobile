@@ -21,8 +21,6 @@ const Profile = () => {
             mediaType: 'photo',
             quality: 1,
         })
-
-        console.log(resultImages)
     }
 
     return (
@@ -85,8 +83,10 @@ const Profile = () => {
                                         editable
                                         secureTextEntry={true}
                                         error={
-                                            touched.password &&
-                                            errors.password?.toString()
+                                            !!(
+                                                touched.password &&
+                                                errors.password?.toString()
+                                            )
                                         }
                                         onChangeText={handleChange('password')}
                                         onBlur={handleBlur('password')}
@@ -110,8 +110,10 @@ const Profile = () => {
                                         value={values.fullName}
                                         editable
                                         error={
-                                            touched.fullName &&
-                                            errors.fullName?.toString()
+                                            !!(
+                                                touched.fullName &&
+                                                errors.fullName?.toString()
+                                            )
                                         }
                                         onChangeText={handleChange('fullName')}
                                         onBlur={handleBlur('fullName')}
