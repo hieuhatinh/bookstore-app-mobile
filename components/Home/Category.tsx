@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ProductList from './ProductList'
-import productCategoryApi from '../../api/productCategoryApi'
-import { IProduct } from '../../utilities/interface/product'
 import SnackbarMess from '../Notification/SnackbarMess'
+import {
+    getAllProductThunk,
+    getProductByCategory,
+} from '../../sliceReducer/productsSlice'
+import { ActivityIndicator, MD2Colors } from 'react-native-paper'
+import { IProduct } from '../../utilities/interface/product'
 
 interface IPropCategory {
     category: string
@@ -15,59 +20,54 @@ interface IPropCategory {
 
 const Category = (props: IPropCategory) => {
     const { category } = props
-    const navigation = useNavigation<any>()
-    const [books, setBooks] = useState<IProduct[] | undefined | null>()
+    const dispatch = useDispatch<any>()
+    const res = useSelector((state: any) => state.products)
+
+    const [data, setData] = useState<any>()
     const [message, setMessage] = useState<string>()
+    const isFocused = useIsFocused()
 
     useEffect(() => {
-        const focusListener = navigation.addListener('focus', () => {
-            const getBooks = async () => {
-                let resultBooks
-                if (category === 'all') {
-                    resultBooks = await productCategoryApi.getAllBook()
-                } else {
-                    resultBooks = await productCategoryApi.getBookByCategory({
-                        category,
-                    })
-                }
+        setData(res)
+    }, [res])
 
-                if (
-                    resultBooks.data.statusCode >= 200 &&
-                    resultBooks.data.statusCode <= 299
-                ) {
-                    setMessage(resultBooks.data.message || 'Thành công')
-                    setBooks(resultBooks.data.data)
+    useEffect(() => {
+        if (isFocused === true) {
+            const getBooks = () => {
+                if (category === 'all') {
+                    dispatch(getAllProductThunk())
                 } else {
-                    setMessage(resultBooks.data.message || 'Có lỗi xảy ra')
+                    dispatch(getProductByCategory('category'))
                 }
             }
-
             getBooks()
-        })
-
-        return focusListener
-    }, [navigation])
+        }
+    }, [category, isFocused])
 
     return (
         <SafeAreaView>
-            <GestureHandlerRootView
-                style={{
-                    position: 'relative',
-                    height: '100%',
-                }}
-            >
-                {books?.length !== 0 ? (
-                    <ProductList data={books} />
-                ) : (
-                    <View className='flex justify-center items-center h-full'>
-                        <Text className='text-price-color'>
-                            Không có sách của thể loại này
-                        </Text>
-                    </View>
-                )}
+            {res.loading ? (
+                <ActivityIndicator animating={true} color={MD2Colors.red800} />
+            ) : (
+                <GestureHandlerRootView
+                    style={{
+                        position: 'relative',
+                        height: '100%',
+                    }}
+                >
+                    {data?.products.length !== 0 ? (
+                        <ProductList data={data?.products} />
+                    ) : (
+                        <View className='flex justify-center items-center h-full'>
+                            <Text className='text-price-color'>
+                                Không có sách của thể loại này
+                            </Text>
+                        </View>
+                    )}
 
-                <SnackbarMess message={message} setMessage={setMessage} />
-            </GestureHandlerRootView>
+                    <SnackbarMess message={message} setMessage={setMessage} />
+                </GestureHandlerRootView>
+            )}
         </SafeAreaView>
     )
 }

@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import { Searchbar, Snackbar } from 'react-native-paper'
+import { useState, useEffect } from 'react'
+import { Searchbar } from 'react-native-paper'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaView, Text, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ProductList from '../../components/Home/ProductList'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import searchApi from '../../api/searchApi'
 import { IProduct } from '../../utilities/interface/product'
 import SnackbarMess from '../../components/Notification/SnackbarMess'
+import { searchProduct } from '../../sliceReducer/searchSlice'
 
-const SearchScreen = ({ navigation }: any) => {
+const SearchScreen = () => {
     const insets = useSafeAreaInsets()
     const [searchString, setSearchString] = useState<string>('')
     const [message, setMessage] = useState<string>()
@@ -17,18 +18,17 @@ const SearchScreen = ({ navigation }: any) => {
 
     const onChangeSearch = (query: string) => setSearchString(query)
 
+    const dispatch = useDispatch<any>()
+    const data = useSelector<any>((state: any) => state.search)
+
+    useEffect(() => {
+        setDataResult(data)
+    }, [data])
+
     const handleKeyPressEnter = async () => {
         let _page = 1
-        const result = await searchApi.search({ searchString, _page })
 
-        let statusCode = result.data.statusCode
-
-        if (statusCode === 200) {
-            setDataResult(result.data.data)
-            setMessage(result.data.message || 'Thành công')
-        } else {
-            setMessage(result.data.message || 'Xảy ra lỗi')
-        }
+        dispatch(searchProduct({ searchString, _page }))
     }
 
     return (

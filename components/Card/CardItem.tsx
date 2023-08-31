@@ -16,7 +16,7 @@ const CardItem = ({ data }: IData) => {
             <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => {
-                    navigation.navigate('DetailBook', { data })
+                    navigation.navigate('DetailBook', { id: data._id })
                 }}
                 className='w-full'
             >

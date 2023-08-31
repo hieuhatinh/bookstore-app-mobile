@@ -57,9 +57,10 @@ const tabBarList = [
     },
 ]
 
-const HomeScreen = ({ navigation }: any) => {
+const HomeScreen = () => {
     return (
         <HomeTabs.Navigator
+            initialRouteName='Tất cả'
             screenOptions={{
                 tabBarScrollEnabled: true,
                 tabBarLabelStyle: {
