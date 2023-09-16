@@ -1,8 +1,13 @@
 import { View, Text, FlatList } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Avatar, Button } from 'react-native-paper'
-import SwitchButton from '../../components/Account/SwitchButton'
+import { useIsFocused } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
+
+import SwitchButton from '../../components/Account/SwitchButton'
+import Loading from '../../components/Loading'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProfileUser } from '../../sliceReducer/authSlice'
 
 interface IPropItem {
     title: string
@@ -39,47 +44,57 @@ const buttons: IPropItem[] = [
 ]
 
 const AccountScreen = ({ navigation }: any) => {
+    const dispatch = useDispatch<any>()
+    const isFocused = useIsFocused()
+
+    const user = useSelector((state: any) => state.auth.user)
+    const loading = useSelector((state: any) => state.auth.loading)
+
     const [userLogin, setUserLogin] = useState<boolean>(false)
-    const [userName, setUserName] = useState<string>()
-    const [avatar, setAvatar] = useState<string>()
 
     useEffect(() => {
-        const focusListener = navigation.addListener('focus', () => {
-            const getToken = async () => {
-                const value: any = await AsyncStorage.getItem('AccessToken')
+        const getToken = async () => {
+            const value: any = await AsyncStorage.getItem('AccessToken')
 
-                if (value !== null) {
-                    setUserLogin(true)
-                } else {
-                    setUserLogin(false)
-                }
-
-                const data = JSON.parse(value)
-                setUserName(data?.userName)
-                setAvatar(data?.avatar)
+            if (value !== null) {
+                setUserLogin(true)
+            } else {
+                setUserLogin(false)
             }
+        }
 
+        const getUser = () => {
+            dispatch(getProfileUser())
+        }
+
+        if (isFocused) {
             getToken()
-        })
+            getUser()
+        }
+    }, [isFocused])
 
-        return focusListener
-    }, [navigation])
+    if (loading) {
+        return <Loading />
+    }
 
     return (
         <>
             {userLogin ? (
                 <View className='h-full w-full flex justify-center items-center'>
                     <View className='flex justify-between items-center'>
-                        <Avatar.Image
-                            size={80}
-                            source={
-                                avatar ||
-                                require('../../assets/images/avatar_mac_dinh.jpg')
-                            }
-                            className='object-contain'
-                        />
+                        {user?.avatar ? (
+                            <Avatar.Image
+                                size={80}
+                                source={{ uri: user?.avatar.path }}
+                            />
+                        ) : (
+                            <Avatar.Image
+                                size={80}
+                                source={require('../../assets/images/avatar_mac_dinh.jpg')}
+                            />
+                        )}
                         <Text className='text-secondary-font text-third-color mt-2'>
-                            {userName}
+                            {user.fullName || user.email}
                         </Text>
                     </View>
                     <View className='w-full mt-6'>

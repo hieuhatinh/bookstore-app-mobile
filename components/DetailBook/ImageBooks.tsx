@@ -10,16 +10,18 @@ interface IPropsImage {
 const ImageBooks = (props: IPropsImage) => {
     const { images } = props
 
-    const [indexImg, setIndexImg] = useState<number>(0)
+    let lengthImages = images?.length
+
+    const [indexImg, setIndexImg] = useState<number>(1)
 
     // khi click sẽ hiện ảnh tiếp theo hoặc ảnh trước
     const handlePressBefore = () => {
-        let totalImage = images.length
+        let totalImage = lengthImages
         setIndexImg((prev) => (prev - 1) % totalImage)
     }
 
     const handlePressAfter = () => {
-        let totalImage = images.length
+        let totalImage = lengthImages
         setIndexImg((prev) => (prev + 1) % totalImage)
     }
 
@@ -27,7 +29,7 @@ const ImageBooks = (props: IPropsImage) => {
     const timeoutId = useRef<any>()
 
     useEffect(() => {
-        let totalImage = images.length
+        let totalImage = lengthImages
         timeoutId.current = setTimeout(() => {
             setIndexImg((prev) => (prev + 1) % totalImage)
         }, 5000)
@@ -37,7 +39,7 @@ const ImageBooks = (props: IPropsImage) => {
 
     return (
         <View className='flex flex-1 w-full flex-row justify-between items-center'>
-            {indexImg === -1 ? (
+            {indexImg <= 0 ? (
                 <></>
             ) : (
                 <TouchableOpacity
@@ -47,15 +49,24 @@ const ImageBooks = (props: IPropsImage) => {
                     <Icon name='chevron-left' size={24} color='black' />
                 </TouchableOpacity>
             )}
-            <Image
-                source={{
-                    uri: images[indexImg].path,
-                }}
-                resizeMode='contain'
-                height={255}
-                className='flex flex-1'
-            />
-            {indexImg === images.length ? (
+            {images?.[indexImg].path ? (
+                <Image
+                    source={{
+                        uri: images?.[indexImg].path,
+                    }}
+                    resizeMode='contain'
+                    height={255}
+                    className='flex flex-1'
+                />
+            ) : (
+                <Image
+                    source={require('../../assets/images/load-img.png')}
+                    resizeMode='contain'
+                    height={255}
+                    className='flex flex-1'
+                />
+            )}
+            {indexImg >= lengthImages - 1 ? (
                 <></>
             ) : (
                 <TouchableOpacity

@@ -6,21 +6,41 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native'
-import { Avatar, Badge, Button, IconButton, Portal } from 'react-native-paper'
+import { Avatar, Button, IconButton, Portal } from 'react-native-paper'
 import { Link } from '@react-navigation/native'
 
-import authApi from '../../api/authApi'
-import { IValueUser } from '../../utilities/interface/auth'
-import SnackbarMess from '../../components/Notification/SnackbarMess'
 import ImageBooks from '../../components/DetailBook/ImageBooks'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+    getDetailProduct,
+    getTitleProduct,
+} from '../../sliceReducer/productsSlice'
+import { addProductInCart } from '../../sliceReducer/cartSlice'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import SnackbarMess from '../../components/Notification/SnackbarMess'
+import DialogMessage from '../../components/DialogMessage'
 
 const DetailBook = ({ navigation, route }: any) => {
-    const { data } = route.params
+    const { id } = route.params
+
+    const dispatch = useDispatch<any>()
+
+    const book = useSelector((state: any) => state.products.products)
+    const loading = useSelector((state: any) => state.products.loading)
+    const messageCart = useSelector((state: any) => state.cart.message)
+    const statusCodeCart = useSelector((state: any) => state.cart.statusCode)
 
     const [buttonPositionY, setButtonPositionY] = useState<any>()
     const [visible, setVisible] = useState<boolean>(false)
-    const [sellerProfile, setSellerProfile] = useState<IValueUser>()
-    const [message, setMessage] = useState<string>()
+    const [quantityProduct, setQuantityProduct] = useState<number>(1)
+    const [loadingAdd, setLoadingAdd] = useState<boolean>(false)
+    const [messageNotify, setMessageNotify] = useState<string>('') // message thông báo khi thêm vào giỏ hàng thành công
+    const [isPressAdd, setIsPressAdd] = useState<boolean>(false)
+    const [content, setContent] = useState<{
+        describe: string
+        textButton: string
+        href?: string
+    }>({ describe: '', textButton: '' })
 
     const handleScroll = (event: any) => {
         const result =
@@ -29,48 +49,129 @@ const DetailBook = ({ navigation, route }: any) => {
         setVisible(result)
     }
 
-    // gọi API lấy thông tin của người bán
+    // lấy thông tin của sách
     useEffect(() => {
-        const getProfileSeller = async () => {
-            let idSeller = data.seller
-            const result = await authApi.getProfileSeller({ idSeller })
-
-            if (
-                result.data.statusCode >= 200 &&
-                result.data.statusCode <= 299
-            ) {
-                setMessage(result.data.message || 'Thành công')
-                setSellerProfile(result.data.data)
-            } else {
-                setMessage(result.data.message || 'Có lỗi xảy ra')
-            }
+        const getProfileProduct = async () => {
+            dispatch(getDetailProduct(id))
         }
 
-        getProfileSeller()
+        getProfileProduct()
     }, [])
 
+    // ẩn hiện Dialog
+    const handlePressBuyNow = () => {
+        setContent({
+            describe: 'Tính năng đang được phát triển',
+            textButton: 'OK',
+        })
+        setVisible(true)
+    }
+
+    // xử lý khi bấm thêm vào giỏ hàng
+    const handlePressPlus = () => {
+        setQuantityProduct((prev) => prev + 1)
+    }
+
+    const handlePressMinus = () => {
+        setQuantityProduct((prev) => prev - 1)
+    }
+
+    const handlePressAddToCart = async () => {
+        setLoadingAdd(true)
+        setIsPressAdd(true)
+        const value: any = await AsyncStorage.getItem('AccessToken')
+        if (value === null) {
+            setContent({
+                describe: 'Bạn chưa đăng nhập',
+                textButton: 'Đi đăng nhập',
+                href: 'Login',
+            })
+            setVisible(true)
+        } else {
+            const { token } = JSON.parse(value)
+            const idProduct = book._id
+
+            dispatch(
+                addProductInCart({
+                    idProduct,
+                    quantity: quantityProduct,
+                    token,
+                }),
+            )
+        }
+
+        setLoadingAdd(false)
+    }
+
+    // xử lý khi thêm vào giỏ hàng thành công
+    useEffect(() => {
+        if (isPressAdd && statusCodeCart) {
+            setMessageNotify(messageCart)
+        }
+    }, [statusCodeCart, isPressAdd])
+
+    useEffect(() => {
+        dispatch(getTitleProduct(book.name))
+    }, [loading])
+
+    if (loading) {
+        return (
+            <View>
+                <Text>Đang load dữ liệu ... </Text>
+            </View>
+        )
+    }
+
     return (
-        <ScrollView className='relative h-full' onScroll={handleScroll}>
-            <SafeAreaView className='flex'>
+        <SafeAreaView className='flex'>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                className='relative h-full'
+                onScroll={handleScroll}
+            >
                 {/* Sách và giá */}
                 <View className='flex-1 bg-white px-3 pb-3'>
-                    <ImageBooks images={data.images} />
+                    <ImageBooks images={book?.images} />
                     <View className='mt-2'>
                         <Text className='text-large-font text-black'>
-                            {data.name}
+                            {book.name}
                         </Text>
                         <Text className='text-secondary-font text-price-color mt-1'>
-                            {data.price}{' '}
-                            <Badge className='text-secondary-font bg-transparent text-price-color'>
-                                đ
-                            </Badge>
+                            {book?.price?.toLocaleString('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
+                            })}
                         </Text>
+                        <View className='flex flex-row justify-between items-center'>
+                            <Text className='text-secondary-font text-black'>
+                                Số lượng
+                            </Text>
+                            <View className='flex flex-row justify-center items-center'>
+                                <IconButton
+                                    icon='minus-box-outline'
+                                    onPress={handlePressMinus}
+                                    disabled={
+                                        quantityProduct <= 1 ? true : false
+                                    }
+                                />
+                                <Text>{quantityProduct}</Text>
+                                <IconButton
+                                    icon='plus-box-outline'
+                                    onPress={handlePressPlus}
+                                />
+                            </View>
+                        </View>
                     </View>
                 </View>
 
                 {/* Button thêm vào giỏ hàng và mua ngay */}
                 <View className='bg-white p-3 mt-2 flex-1'>
-                    <Button mode='contained' className='bg-secondary-color'>
+                    <Button
+                        mode='contained'
+                        className='bg-secondary-color'
+                        onPress={handlePressAddToCart}
+                        loading={loadingAdd}
+                    >
                         Thêm vào giỏ
                     </Button>
                     <Button
@@ -84,6 +185,7 @@ const DetailBook = ({ navigation, route }: any) => {
                                     e.nativeEvent.layout.height,
                             )
                         }
+                        onPress={handlePressBuyNow}
                     >
                         Mua ngay
                     </Button>
@@ -98,15 +200,14 @@ const DetailBook = ({ navigation, route }: any) => {
                         <View className='flex flex-row justify-center items-center'>
                             <Avatar.Image
                                 source={
-                                    typeof sellerProfile?.avatar === 'string'
-                                        ? { uri: sellerProfile?.avatar }
+                                    typeof book.seller?.avatar.path === 'string'
+                                        ? { uri: book.seller?.avatar.path }
                                         : require('../../assets/images/avatar_seller_default.png')
                                 }
                                 size={40}
                             />
                             <Text className='ml-2 text-primary-font text-black font-bold'>
-                                {sellerProfile?.fullName ||
-                                    sellerProfile?.email}
+                                {book.seller?.fullName || book.seller?.email}
                             </Text>
                         </View>
                         <IconButton icon='chevron-right' />
@@ -145,19 +246,19 @@ const DetailBook = ({ navigation, route }: any) => {
                     <Text className='text-primary-font text-black font-bold'>
                         Mô tả sản phẩm
                     </Text>
-                    {data.description ? (
+                    {book.description ? (
                         <>
                             <Text
                                 ellipsizeMode='tail'
                                 numberOfLines={4}
                                 className='text-third-font mt-1'
                             >
-                                {data.description}
+                                {book.description}
                             </Text>
                             <Link
                                 to={{
                                     screen: 'ProductDescription',
-                                    params: { description: data.description },
+                                    params: { description: book.description },
                                 }}
                                 style={{
                                     color: '#3b82f6',
@@ -186,7 +287,7 @@ const DetailBook = ({ navigation, route }: any) => {
                         </Text>
                         <IconButton icon='chevron-right' />
                     </TouchableOpacity>
-                    <Text>{data.review}</Text>
+                    <Text>{book.review}</Text>
                 </View>
                 <Portal>
                     {visible && (
@@ -194,6 +295,7 @@ const DetailBook = ({ navigation, route }: any) => {
                             <Button
                                 mode='contained'
                                 className='flex-1 bg-secondary-color'
+                                onPress={handlePressAddToCart}
                             >
                                 Thêm vào giỏ
                             </Button>
@@ -214,11 +316,29 @@ const DetailBook = ({ navigation, route }: any) => {
                         </View>
                     )}
                 </Portal>
+            </ScrollView>
 
-                {/* Hiển thị thông báo */}
-                <SnackbarMess message={message} setMessage={setMessage} />
-            </SafeAreaView>
-        </ScrollView>
+            {/* thông báo thêm vào giỏ hàng thành công */}
+            {messageNotify.length > 0 && isPressAdd && (
+                <SnackbarMess
+                    message={messageNotify}
+                    setMessage={setMessageNotify}
+                    action={{
+                        label: 'Đi đến giỏ hàng',
+                        onPress: () => {
+                            navigation.navigate('Cart')
+                        },
+                    }}
+                />
+            )}
+
+            {/* Nhấn  vào mua ngay / chưa đăng nhập */}
+            <DialogMessage
+                visible={visible}
+                setVisible={setVisible}
+                content={content}
+            />
+        </SafeAreaView>
     )
 }
 

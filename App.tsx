@@ -11,7 +11,6 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Provider } from 'react-redux'
 
-// import {Platform} from 'react-native';
 import LoginScreen from './screens/auth/Login'
 import RegisterScreen from './screens/auth/Register'
 import BottomTabs from './components/Main/BottomTabs'
@@ -21,6 +20,8 @@ import Profile from './screens/Profile'
 import HeaderDetail from './components/DetailBook/HeaderDetail'
 import ProductDescription from './screens/DetailBook/ProductDescription'
 import store from './redux/store'
+
+// 8. test
 
 const Stack = createNativeStackNavigator()
 
@@ -54,13 +55,16 @@ function App(): JSX.Element {
                                 name='DetailBook'
                                 component={DetailBook}
                                 options={{
-                                    headerBackVisible: true,
-                                    headerTitleAlign: 'left',
-                                    title: '',
-                                    headerRight: (props) => <HeaderDetail />,
+                                    header: HeaderDetail,
                                 }}
                             />
-                            <Stack.Screen name='Profile' component={Profile} />
+                            <Stack.Screen
+                                name='Profile'
+                                component={Profile}
+                                options={{
+                                    headerTitle: 'Cập nhật thông tin',
+                                }}
+                            />
                             <Stack.Screen
                                 name='ProductDescription'
                                 component={ProductDescription}

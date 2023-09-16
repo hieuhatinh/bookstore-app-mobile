@@ -1,17 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Formik } from 'formik'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Text, View, ScrollView } from 'react-native'
 import { Button, Divider, TextInput } from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux'
 
 import schemaFormLogin from '../../utilities/schema/login'
 import SocialNetwork from './SocialNetwork'
-import authApi from '../../api/authApi'
 import { IValuesAuth } from '../../utilities/interface/auth'
 import SnackbarMess from '../../components/Notification/SnackbarMess'
+import { loginUser, setEmpty } from '../../sliceReducer/authSlice'
 
 const LoginScreen = ({ navigation }: any) => {
+    const dispatch = useDispatch<any>()
+
+    const message = useSelector((state: any) => state.auth.message)
+    const statusCode = useSelector((state: any) => state.auth.statusCode)
+
     const [messageError, setMessageError] = useState('')
+
+    useEffect(() => {
+        dispatch(setEmpty({ message: '', statusCode: null }))
+        if (statusCode === 404) {
+            setMessageError(message)
+        } else if (statusCode === 200) {
+            navigation.navigate('Home')
+        }
+    }, [message, statusCode, dispatch])
 
     return (
         <ScrollView>
@@ -25,30 +39,7 @@ const LoginScreen = ({ navigation }: any) => {
                         }}
                         validationSchema={schemaFormLogin}
                         onSubmit={async (values: IValuesAuth) => {
-                            const result = await authApi.login({ ...values })
-
-                            let statusCode = result?.data?.statusCode
-
-                            if (statusCode === 200) {
-                                const value = {
-                                    token: result?.data?.data.token,
-                                    userName:
-                                        result?.data?.data?.fullName ||
-                                        result?.data?.data?.email,
-                                    avatar: result?.data?.data?.avatar
-                                        ? result?.data?.data?.avatar.path
-                                        : null,
-                                }
-                                await AsyncStorage.setItem(
-                                    'AccessToken',
-                                    JSON.stringify(value),
-                                )
-
-                                setMessageError(result?.data?.message)
-                                navigation.navigate('Home')
-                            } else {
-                                setMessageError(result?.data?.message)
-                            }
+                            dispatch(loginUser({ ...values }))
                         }}
                     >
                         {({

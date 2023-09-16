@@ -2,7 +2,7 @@ export interface IValueImage {
     fieldname: string
     originalname: Buffer
     encoding: string
-    mimetype: string,
+    mimetype: string
     path: string
     size: number
     filename: string
@@ -13,7 +13,6 @@ export interface IProduct {
     name: string
     price: number
     images: IValueImage[]
-    mainImage: IValueImage
     description: string | undefined
     author: string
     seller: string

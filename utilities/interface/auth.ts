@@ -7,15 +7,20 @@ export interface IValuesAuth {
 export interface IValuesRegister {
     email: string
     password: string
-    confirmPassword: string 
+    confirmPassword: string
     phoneNumber: string
 }
 
 export interface IValueUser {
-    email: string, 
+    email: string
     fullName: string
-    password: string,
+    password: string
     phoneNumber: string
     avatar: string
     role: string
+}
+
+export interface IUpdateProfile {
+    avatar: any
+    fullName: string | undefined
 }

@@ -7,18 +7,24 @@ interface IProductsSlice {
     loading: boolean
     products: IProduct[]
     message: string | undefined
+    titleProduct: string
 }
 
 const initialState: IProductsSlice = {
     loading: false,
     products: [],
     message: '',
+    titleProduct: '',
 }
 
 const productsSlice = createSlice({
     name: 'productsSlice',
     initialState,
-    reducers: {},
+    reducers: {
+        getTitleProduct: (state, action) => {
+            state.titleProduct = action.payload
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getAllProductThunk.pending, (state, action) => {
@@ -84,7 +90,7 @@ export const getProductByCategory = createAsyncThunk(
 
 export const getDetailProduct = createAsyncThunk(
     'products/getDetailProduct',
-    async (idProduct) => {
+    async (idProduct: string) => {
         const res = await axiosClient.get(`/product/getDetail/${idProduct}`)
         const result = await res.data.data
         const message = await res.data.message
@@ -92,6 +98,6 @@ export const getDetailProduct = createAsyncThunk(
     },
 )
 
-// export const {getAllProduct} = productsSlice.actions;
+export const { getTitleProduct } = productsSlice.actions
 
 export default productsSlice.reducer

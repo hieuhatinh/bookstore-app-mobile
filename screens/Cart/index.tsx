@@ -1,184 +1,178 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { View, Text, FlatList } from 'react-native'
+import { useIsFocused } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import CartItemCart from '../../components/Card/CardItemCart'
-import { Badge, Checkbox, Divider } from 'react-native-paper'
+import { Button, Checkbox, Divider } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, useSelector } from 'react-redux'
 
-const data = [
-    {
-        id: 1,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 100.0,
-    },
-    {
-        id: 2,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 200.0,
-    },
-    {
-        id: 3,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 300.0,
-    },
-    {
-        id: 4,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 400.0,
-    },
-    {
-        id: 5,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 500.0,
-    },
-    {
-        id: 6,
-        name: '3 người thầy vĩ đại',
-        author: 'Robin Sharma',
-        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEhxU1ec0Q7O0_sgstq6gF_c6XVsrNjLGtnw&usqp=CAU',
-        price: 600.0,
-    },
-]
-
-interface IPropItem {
-    id: number
-    name: string
-    author: string
-    image: string
-    price: number
-}
-
-interface ICheckBox {
-    state: boolean
-    price: number
-}
+import CardItemCart from '../../components/Card/CardItemCart'
+import { getProductsInCart } from '../../sliceReducer/cartSlice'
+import { IPropItem } from '../../utilities/interface/cart'
+import Loading from '../../components/Loading'
 
 const CartScreen = ({ navigation }: any) => {
-    const lengthData = data.length
-    const [checkboxes, setCheckboxes] = useState<ICheckBox[]>(
-        Array.from({ length: lengthData }, () => ({ state: false, price: 0 })),
-    )
-    const [checkedAll, setCheckedAll] = useState(false)
-    const [totalPrice, setTotalPrice] = useState(0)
     const [userLogin, setUserLogin] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const isFocused = useIsFocused()
 
-    const handleCheckboxChange = (index: number, price: number) => {
-        const newCheckboxes = [...checkboxes]
-        newCheckboxes[index].state = !newCheckboxes[index].state
-        newCheckboxes[index].price = price
-        setCheckboxes(newCheckboxes)
-
-        const isCheckAllItem = newCheckboxes.filter(
-            (item) => item.state === false,
-        )
-
-        if (isCheckAllItem.length === 0) {
-            setCheckedAll(true)
-        } else {
-            setCheckedAll(false)
-        }
-    }
-
-    const handleCheckAll = (data: IPropItem[]) => {
-        const newCheckboxes = checkboxes.map((item, index) => {
-            item.state = !checkedAll
-            item.price = item.price > 0 ? item.price : data[index].price
-            return item
-        })
-        setCheckboxes(newCheckboxes)
-        setCheckedAll(!checkedAll)
-    }
-
-    // tính toán tổng tiền của số sản phẩm đã chọn
-    useEffect(() => {
-        const result = checkboxes.filter((item) => item.state === true)
-
-        const total = result.reduce((preValue, currentValue) => {
-            return preValue + currentValue.price
-        }, 0)
-
-        setTotalPrice(total)
-    }, [checkboxes, checkedAll])
+    const dispatch = useDispatch<any>()
+    const result = useSelector((state: any) => state.cart.products)
 
     // check user đã đăng nhập chưa
     useEffect(() => {
-        const focusListener = navigation.addListener('focus', () => {
+        if (isFocused) {
             const getToken = async () => {
+                setLoading(true)
                 const value: any = await AsyncStorage.getItem('AccessToken')
-
                 if (value !== null) {
                     setUserLogin(true)
                 } else {
                     setUserLogin(false)
                 }
+                setLoading(false)
             }
 
             getToken()
-        })
-
-        return focusListener
+        }
     }, [])
 
-    useEffect(() => {}, [userLogin])
+    // nếu userLogin thì gọi api lấy products của giỏ hàng / khi products có sự thay đổi (xóa, ...)
+    useEffect(() => {
+        if (isFocused && userLogin) {
+            const getProducts = async () => {
+                const value: any = await AsyncStorage.getItem('AccessToken')
+                const { token }: any = JSON.parse(value)
+
+                dispatch(getProductsInCart({ token }))
+            }
+
+            if (result === undefined) {
+                getProducts()
+            }
+        }
+    }, [isFocused, userLogin, result])
+
+    const [selectedIds, setSelectedIds] = useState<any>([])
+
+    // Hàm để cập nhật state khi nhấn vào checkbox
+    const handleSelect = (id: string) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter((sid: string) => sid !== id))
+        } else {
+            setSelectedIds([...selectedIds, id])
+        }
+    }
+
+    // Hàm để tính toán tổng tiền của các sản phẩm đã chọn
+    const getSubTotal = useMemo(() => {
+        let total = 0
+        for (let id of selectedIds) {
+            let product = result.products?.find((p: IPropItem) => p._id === id)
+            if (product) {
+                total += product.product.price * product.quantityProduct
+            }
+        }
+        return total
+    }, [selectedIds, result.products])
+
+    // tổng tiền sau khi cộng thêm tiền ship (mặc định tiền ship = 8% tổng tiền mua)
+    const getTotalPrice = useMemo(() => {
+        return getSubTotal * (1 + 0.08)
+    }, [selectedIds, result.products])
+
+    // xử lý khi nhấn checkAll
+    const handleCheckAll = () => {
+        if (selectedIds.length === result.products.length) {
+            setSelectedIds([])
+        } else {
+            setSelectedIds(result.products.map((p: IPropItem) => p._id))
+        }
+    }
+
+    if (loading) {
+        return <Loading />
+    }
+
+    // chưa đăng nhập thì đi đến trang đăng nhập
+    if (!userLogin) {
+        return (
+            <View className='h-full flex justify-center items-center'>
+                <Button
+                    icon='login'
+                    mode='contained'
+                    className='bg-primary-color w-11/12'
+                    onPress={() => {
+                        navigation.navigate('Login')
+                    }}
+                >
+                    Đi đến đăng nhập
+                </Button>
+            </View>
+        )
+    }
 
     return (
-        <SafeAreaView className='h-full'>
+        <SafeAreaView className='h-full relative'>
             <View className='flex flex-row justify-center items-center'>
                 <Icon color='#34d399' name='cart-minus' size={25} />
-                <Text className='text-primary-font font-bold m-2 text-orange-500'>
+                <Text className='text-primary-font font-bold m-2 mt-3 text-orange-500'>
                     Giỏ hàng của tôi
                 </Text>
             </View>
-            <View>
-                <View className='flex flex-row justify-start items-center bg-white mx-2 rounded-lg mt-2'>
-                    <View className='ml-2'>
-                        <Checkbox
-                            color='#22d3ee'
-                            status={checkedAll ? 'checked' : 'unchecked'}
-                            onPress={() => handleCheckAll(data)}
-                        />
+            {result.products?.length > 0 ? (
+                <View className='h-full'>
+                    <View className='flex flex-row justify-start items-center bg-white mx-2 rounded-lg mt-2'>
+                        <View className='ml-2'>
+                            <Checkbox
+                                color='#22d3ee'
+                                status={
+                                    selectedIds.length ===
+                                    result.products?.length
+                                        ? 'checked'
+                                        : 'unchecked'
+                                }
+                                onPress={handleCheckAll}
+                            />
+                        </View>
+                        <Text className='text-primary-font font-bold'>
+                            Chọn tất cả
+                        </Text>
                     </View>
-                    <Text className='text-primary-font font-bold'>
-                        Chọn tất cả
+                    <FlatList
+                        className='h-[400px]'
+                        nestedScrollEnabled={true}
+                        data={result.products}
+                        renderItem={({ item, index }) => (
+                            <CardItemCart
+                                product={item}
+                                selected={selectedIds.includes(item._id)}
+                                onSelect={handleSelect}
+                                setLoading={setLoading}
+                            />
+                        )}
+                        keyExtractor={(item) => item?._id}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
+            ) : (
+                <View className='absolute top-1/2 right-0 left-0 bottom-0'>
+                    <Text className='text-center'>
+                        Không có sản phẩm trong giỏ hàng
                     </Text>
                 </View>
-                <FlatList
-                    className='h-[400px]'
-                    nestedScrollEnabled={true}
-                    data={data}
-                    renderItem={({ item, index }) => (
-                        <CartItemCart
-                            item={item}
-                            checkboxes={checkboxes}
-                            setCheckboxes={setCheckboxes}
-                            handleCheckboxChange={handleCheckboxChange}
-                            index={index}
-                        />
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                />
-            </View>
-            <View className='bg-white rounded m-2 mb-3 p-2'>
+            )}
+            <View className='bg-white rounded m-2 mb-3 p-2 absolute bottom-0 left-0 right-0'>
                 <View className='flex flex-row justify-between'>
                     <Text className='text-primary-font font-bold'>
                         Sub total:{' '}
                     </Text>
                     <Text className='text-secondary-font text-price-color'>
-                        {totalPrice}{' '}
-                        <Badge className='bg-transparent text-price-color text-secondary-font'>
-                            đ
-                        </Badge>
+                        {getSubTotal.toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        })}
                     </Text>
                 </View>
                 <View className='flex flex-row justify-between my-1'>
@@ -186,20 +180,17 @@ const CartScreen = ({ navigation }: any) => {
                         Shipping:{' '}
                     </Text>
                     <Text className='text-secondary-font text-price-color'>
-                        0.0{' '}
-                        <Badge className='bg-transparent text-price-color text-secondary-font'>
-                            đ
-                        </Badge>
+                        8%
                     </Text>
                 </View>
                 <Divider className='my-1 h-[1px]' />
                 <View className='flex flex-row justify-between'>
                     <Text className='text-primary-font font-bold'>Total: </Text>
                     <Text className='text-secondary-font text-price-color'>
-                        {totalPrice}{' '}
-                        <Badge className='bg-transparent text-price-color text-secondary-font'>
-                            đ
-                        </Badge>
+                        {getTotalPrice.toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        })}
                     </Text>
                 </View>
             </View>

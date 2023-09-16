@@ -1,17 +1,32 @@
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Formik } from 'formik'
 import { ScrollView, Text, View } from 'react-native'
-import { Button, Divider, Snackbar, TextInput } from 'react-native-paper'
+import { Button, Divider, TextInput } from 'react-native-paper'
 
 import schemaFormRegister from '../../utilities/schema/register'
 import SocialNetwork from './SocialNetwork'
 import { IValuesRegister } from '../../utilities/interface/auth'
-import authApi from '../../api/authApi'
-import { useState } from 'react'
+import { registerUser, setEmpty } from '../../sliceReducer/authSlice'
+import SnackbarMess from '../../components/Notification/SnackbarMess'
 
 const RegisterScreen = ({ navigation }: any) => {
+    const dispatch = useDispatch<any>()
+
+    const message = useSelector((state: any) => state.auth.message)
+    const statusCode = useSelector((state: any) => state.auth.statusCode)
+
     const [messageError, setMessageError] = useState('')
 
-    const onDismissSnackBar = () => setMessageError('')
+    useEffect(() => {
+        dispatch(setEmpty({ message: '', statusCode: null }))
+        if (statusCode === 200) {
+            navigation.navigate('Home')
+        }
+        if (statusCode) {
+            setMessageError(message)
+        }
+    }, [message, statusCode, dispatch])
 
     return (
         <ScrollView>
@@ -29,22 +44,10 @@ const RegisterScreen = ({ navigation }: any) => {
                             let email = values.email
                             let password = values.password
                             let phoneNumber = values.phoneNumber
-                            const result = await authApi.register({
-                                email,
-                                password,
-                                phoneNumber,
-                            })
 
-                            let statusCode = result?.data?.statusCode
-
-                            if (statusCode === 409) {
-                                setMessageError(result?.data?.message)
-                            } else if (statusCode === 200) {
-                                setMessageError(result?.data?.message)
-                                navigation.navigate('Login')
-                            } else {
-                                setMessageError('Có lỗi xảy ra')
-                            }
+                            dispatch(
+                                registerUser({ email, password, phoneNumber }),
+                            )
                         }}
                     >
                         {({
@@ -204,13 +207,10 @@ const RegisterScreen = ({ navigation }: any) => {
                 </View>
 
                 {/* Hiển thị message thông báo */}
-                <Snackbar
-                    className='pb-2 mt-[30px]'
-                    visible={!!messageError}
-                    onDismiss={onDismissSnackBar}
-                >
-                    {messageError}
-                </Snackbar>
+                <SnackbarMess
+                    message={messageError}
+                    setMessage={setMessageError}
+                />
             </View>
         </ScrollView>
     )

@@ -6,29 +6,41 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import ProductList from '../../components/Home/ProductList'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { IProduct } from '../../utilities/interface/product'
 import SnackbarMess from '../../components/Notification/SnackbarMess'
-import { searchProduct } from '../../sliceReducer/searchSlice'
+import {
+    clearResultSearch,
+    searchProduct,
+} from '../../sliceReducer/searchSlice'
+import Loading from '../../components/Loading'
 
 const SearchScreen = () => {
     const insets = useSafeAreaInsets()
     const [searchString, setSearchString] = useState<string>('')
     const [message, setMessage] = useState<string>()
-    const [dataResult, setDataResult] = useState<IProduct[] | any>()
 
     const onChangeSearch = (query: string) => setSearchString(query)
 
     const dispatch = useDispatch<any>()
-    const data = useSelector<any>((state: any) => state.search)
+    const books = useSelector((state: any) => state.search.products)
+    const loading = useSelector((state: any) => state.search.loading)
+    const mess: any = useSelector((state: any) => state.search.message)
 
     useEffect(() => {
-        setDataResult(data)
-    }, [data])
+        setMessage(mess)
+    }, [mess])
 
     const handleKeyPressEnter = async () => {
         let _page = 1
 
         dispatch(searchProduct({ searchString, _page }))
+    }
+
+    const handlePressClearIcon = async () => {
+        dispatch(clearResultSearch([]))
+    }
+
+    if (loading) {
+        return <Loading />
     }
 
     return (
@@ -45,10 +57,11 @@ const SearchScreen = () => {
                 value={searchString}
                 className='m-2 bg-white'
                 onSubmitEditing={handleKeyPressEnter}
+                onClearIconPress={handlePressClearIcon}
             />
-            {dataResult?.length !== 0 ? (
+            {books.length !== 0 ? (
                 <GestureHandlerRootView>
-                    <ProductList data={dataResult} />
+                    <ProductList products={books} />
                 </GestureHandlerRootView>
             ) : (
                 <View className='flex justify-center items-center text-price-color h-full w-full'>

@@ -19,9 +19,9 @@ const searchSlice = createSlice({
     name: 'searchSlice',
     initialState,
     reducers: {
-        // getAllProduct: (state, action) => {
-        //     state.text = action.payload;
-        // },
+        clearResultSearch: (state, action) => {
+            state.products = []
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -53,7 +53,7 @@ export const searchProduct = createAsyncThunk(
             .trim()
             .replace(/\s+/g, ' ')
             .toLocaleLowerCase()
-        const res = await axiosClient.get(
+        const res = await axiosClient.post(
             `/product/search?searchString=${searchString}&_page=${_page}`,
         )
         const result = await res.data.data
@@ -61,5 +61,7 @@ export const searchProduct = createAsyncThunk(
         return { result, message }
     },
 )
+
+export const { clearResultSearch } = searchSlice.actions
 
 export default searchSlice.reducer

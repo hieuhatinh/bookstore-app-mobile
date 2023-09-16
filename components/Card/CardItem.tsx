@@ -1,29 +1,38 @@
+import { useCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { Alert, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { Badge, Card } from 'react-native-paper'
+import { Card } from 'react-native-paper'
+import { useDispatch } from 'react-redux'
+
 import { IProduct } from '../../utilities/interface/product'
+import { getTitleProduct } from '../../sliceReducer/productsSlice'
 
 interface IData {
-    data: IProduct
+    product: IProduct
 }
 
-const CardItem = ({ data }: IData) => {
+const CardItem = ({ product }: IData) => {
     const navigation: any = useNavigation()
+
+    const dispatch = useDispatch()
+
+    const handlePress = useCallback(() => {
+        navigation.navigate('DetailBook', { id: product._id })
+        dispatch(getTitleProduct(product.name))
+    }, [navigation])
 
     return (
         <View className='w-1/2 h-full'>
             <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => {
-                    navigation.navigate('DetailBook', { id: data._id })
-                }}
+                onPress={handlePress}
                 className='w-full'
             >
                 <Card className='m-2 flex-1'>
                     <Card.Cover
                         source={{
-                            uri: data.mainImage.path,
+                            uri: product.images[0].path,
                         }}
                         width={50}
                         height={50}
@@ -33,14 +42,14 @@ const CardItem = ({ data }: IData) => {
                             className='text-base font-semibold'
                             numberOfLines={2}
                         >
-                            {data.name}
+                            {product.name}
                         </Text>
-                        <Text>{data.author}</Text>
+                        <Text>{product.author}</Text>
                         <Text className='mt-1 text-secondary-font text-price-color'>
-                            100.000{' '}
-                            <Badge className='text-secondary-font text-price-color bg-transparent'>
-                                đ
-                            </Badge>
+                            {product.price?.toLocaleString('vi-VN', {
+                                style: 'currency',
+                                currency: 'VND',
+                            })}
                         </Text>
                     </Card.Content>
                 </Card>

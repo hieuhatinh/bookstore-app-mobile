@@ -3,17 +3,17 @@ import CardItem from '../Card/CardItem'
 import { IProduct } from '../../utilities/interface/product'
 
 interface IPropsProductList {
-    data: IProduct[] | undefined | null
+    products: IProduct[] | undefined | null
 }
 
 const ProductList = (props: IPropsProductList) => {
-    const { data } = props
+    const { products } = props
 
     return (
         <FlatList
             className='flex w-full pt-1'
-            data={data}
-            renderItem={({ item }) => <CardItem data={item} />}
+            data={products}
+            renderItem={({ item }) => <CardItem product={item} />}
             keyExtractor={(item) => item._id.toString()}
             numColumns={2}
             scrollEnabled={true}

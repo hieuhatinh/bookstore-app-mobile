@@ -6,13 +6,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ProductList from './ProductList'
-import SnackbarMess from '../Notification/SnackbarMess'
 import {
     getAllProductThunk,
     getProductByCategory,
 } from '../../sliceReducer/productsSlice'
-import { ActivityIndicator, MD2Colors } from 'react-native-paper'
-import { IProduct } from '../../utilities/interface/product'
+import Loading from '../Loading'
 
 interface IPropCategory {
     category: string
@@ -21,53 +19,46 @@ interface IPropCategory {
 const Category = (props: IPropCategory) => {
     const { category } = props
     const dispatch = useDispatch<any>()
-    const res = useSelector((state: any) => state.products)
+    const loading = useSelector((state: any) => state.products.loading)
+    const products = useSelector((state: any) => state.products.products)
 
-    const [data, setData] = useState<any>()
-    const [message, setMessage] = useState<string>()
     const isFocused = useIsFocused()
 
     useEffect(() => {
-        setData(res)
-    }, [res])
-
-    useEffect(() => {
-        if (isFocused === true) {
+        if (isFocused) {
             const getBooks = () => {
                 if (category === 'all') {
                     dispatch(getAllProductThunk())
                 } else {
-                    dispatch(getProductByCategory('category'))
+                    dispatch(getProductByCategory(`${category}`))
                 }
             }
             getBooks()
         }
-    }, [category, isFocused])
+    }, [isFocused, category])
+
+    if (loading) {
+        return <Loading />
+    }
 
     return (
         <SafeAreaView>
-            {res.loading ? (
-                <ActivityIndicator animating={true} color={MD2Colors.red800} />
-            ) : (
-                <GestureHandlerRootView
-                    style={{
-                        position: 'relative',
-                        height: '100%',
-                    }}
-                >
-                    {data?.products.length !== 0 ? (
-                        <ProductList data={data?.products} />
-                    ) : (
-                        <View className='flex justify-center items-center h-full'>
-                            <Text className='text-price-color'>
-                                Không có sách của thể loại này
-                            </Text>
-                        </View>
-                    )}
-
-                    <SnackbarMess message={message} setMessage={setMessage} />
-                </GestureHandlerRootView>
-            )}
+            <GestureHandlerRootView
+                style={{
+                    position: 'relative',
+                    height: '100%',
+                }}
+            >
+                {products?.length !== 0 ? (
+                    <ProductList products={products} />
+                ) : (
+                    <View className='flex justify-center items-center h-full'>
+                        <Text className='text-price-color'>
+                            Không có sách của thể loại này
+                        </Text>
+                    </View>
+                )}
+            </GestureHandlerRootView>
         </SafeAreaView>
     )
 }
